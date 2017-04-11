@@ -47,6 +47,13 @@ figure;
 figure; 
     imshow(im_R_noBG);
     
+    
+%% Normalize image intesities to correspond middle image
+
+im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
+im_R_norm = normalizeImages(im_R_noBG, im_M_noBG);
+
+    
 %% Rectify
 
 [im_Mr_rec, im_R_rec] = rectifyStereoImages(im_M_noBG, im_R_noBG, sP_MR, 'OutputView','full');

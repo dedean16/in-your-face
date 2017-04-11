@@ -19,7 +19,7 @@ bw_filled   = imfill(padarray(edge_closed,size(edge_closed),'symmetric'),'holes'
 mask = bw_filled(   size(edge_closed,1)+(1:size(edge_closed,1)),...
                     size(edge_closed,2)+(1:size(edge_closed,2)) );
 
-	% Search for the largest connected component in the mask (Supposed to
+	%% Search for the largest connected component in the mask (Supposed to
 	% be the person)
 CC = bwconncomp(mask);
 
@@ -35,7 +35,7 @@ end
     % Remove the background from the image by masking
 im_noBG = im(:,:,:) .* repmat(uint8(mask), [1,1,3]);
 
-    % Plot if plotFlag allows
+    %% Plot if plotFlag allows
 if plotFlag
     figure(101);clc;
     subplot(2,2,1);

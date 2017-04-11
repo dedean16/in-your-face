@@ -33,12 +33,27 @@ figure(1); clf
         imshow(im_R)
 
         
-%% Remove background
+%% Remove background in im_*_noBG and store the mask to mask_*
+%   (in mask_* BG pixels are 0 and face 1)
 
-im_L_noBG = removeBackground(im_L, 0.2, 2, true);
-im_M_noBG = removeBackground(im_M, 0.05, 1, true);
-im_R_noBG = removeBackground(im_R, 0.10, 1, true);
+[im_L_noBG, mask_L] = removeBackground(im_L, 0.10, 2, false);
+[im_M_noBG, mask_M] = removeBackground(im_M, 0.10, 2, false);
+[im_R_noBG, mask_R] = removeBackground(im_R, 0.10, 2, false);
 
+figure; 
+    imshow(im_L_noBG);
+figure; 
+    imshow(im_M_noBG);
+figure; 
+    imshow(im_R_noBG);
+    
+    
+%% Normalize image intesities
+
+im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
+im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
+im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
+    
 %% Rectify
 
 [im_Mr_rec, im_R_rec] = rectifyStereoImages(im_M_noBG, im_R_noBG, sP_MR, 'OutputView','full');
