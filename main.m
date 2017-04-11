@@ -33,9 +33,9 @@ figure(1); clf
         
 %% Remove background
 
-im_L_noBG = removeBackground(im_L, 0.03, 10);
-im_M_noBG = removeBackground(im_M, 0.04, 5);
-im_R_noBG = removeBackground(im_R, 0.05, 15);
+im_L_noBG = removeBackground(im_L, 0.03, 10, true);
+im_M_noBG = removeBackground(im_M, 0.04, 5,  true);
+im_R_noBG = removeBackground(im_R, 0.05, 15, true);
 
 %% Rectify
 

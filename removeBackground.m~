@@ -1,11 +1,6 @@
 function [im_BG] = removeBackground(im, thresh, strelVal, skipFlag)
 %% function [im_BG] = removeBackground(im, thresh, strel)
 %   Hint here
-   
-if skipFlag
-    im_BG = im;
-    return
-end
     
 im_g = rgb2gray(im);
 
@@ -23,7 +18,6 @@ if CC.NumObjects > 1;
         end
     end
 end
-
 
 im_BG = im(:,:,:) .* repmat(uint8(edge3), [1,1,3]);
 
