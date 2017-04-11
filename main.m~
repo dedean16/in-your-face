@@ -48,11 +48,11 @@ figure;
     imshow(im_R_noBG);
     
     
-%% Normalize image intesities to correspond middle image
+%% Normalize image intesities
 
 im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
-im_R_norm = normalizeImages(im_R_noBG, im_M_noBG);
-
+im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
+im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
     
 %% Rectify
 
@@ -69,5 +69,16 @@ figure(2); clf
 
 %% Disparity
 
-disparmap = mapDisparity(im_Mr_rec, im_R_rec);
+    % graylevel images
+im_Mr_rec_g = rgb2gray(im_Mr_rec);
+im_R_rec_g = rgb2gray(im_R_rec);
 
+disparityRange = [200 360];
+disparityMap = disparity(im_Mr_rec_g, im_R_rec_g,...
+    'BlockSize', 5, 'DisparityRange', disparityRange);
+
+figure(3); clf;
+imshow(disparityMap,disparityRange);
+title('Disparity Map');
+colormap jet
+colorbar
