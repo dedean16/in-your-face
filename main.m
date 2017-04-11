@@ -3,6 +3,7 @@
 %% Initialize the project directory
 
 [PROJ_DIR, mname, mext] = fileparts(mfilename('fullpath'));
+PROJ_DIR = [PROJ_DIR, '/'];
 cd(PROJ_DIR);
 
 %% Start by camera calibration
@@ -12,13 +13,13 @@ cd(PROJ_DIR);
 % load PROJ_DIR/ipcv_project3/'Calibratie 1'/calibrationRight/RightCamParam/
 
     % Load stereo calibration for Middle and Right
-load([PROJ_DIR, 'ipcv_project3/Calibratie 1/sP_MR.mat'])
-load([PROJ_DIR, 'ipcv_project3/Calibratie 1/sP_ML.mat'])
+load([PROJ_DIR, 'Calibratie 1/sP_MR.mat'])
+load([PROJ_DIR, 'Calibratie 1/sP_ML.mat'])
 
     % Load face images
-im_L = imread([PROJ_DIR,'ipcv_project3/subject1/subject1Left/subject1_Left_1.jpg']);
-im_M = imread([PROJ_DIR,'ipcv_project3/subject1/subject1Middle/subject1_Middle_1.jpg']);
-im_R = imread([PROJ_DIR,'ipcv_project3/subject1/subject1Right/subject1_Right_1.jpg']);
+im_L = imread([PROJ_DIR,'subject1/subject1Left/subject1_Left_1.jpg']);
+im_M = imread([PROJ_DIR,'subject1/subject1Middle/subject1_Middle_1.jpg']);
+im_R = imread([PROJ_DIR,'subject1/subject1Right/subject1_Right_1.jpg']);
 
 figure(1); clf
     subplot(1,3,1);
