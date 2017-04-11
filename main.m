@@ -2,14 +2,8 @@
 
 %% Initialize the project directory
 
-try    % This is spcific to my coputer
-    cd ~/Dropbox/IPCV/Project/;
-    addpath(genpath('.'));
-    PROJ_DIR = [pwd,'/'];
-catch
-    warning('No valid project folder given, nothing initialized!\n')
-    warning('Define PROJ DIR!\n')
-end
+[PROJ_DIR, mname, mext] = fileparts(mfilename('fullpath'));
+cd(PROJ_DIR);
 
 %% Start by camera calibration
 
