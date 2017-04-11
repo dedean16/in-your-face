@@ -52,16 +52,5 @@ figure(2); clf
 
 %% Disparity
 
-    % graylevel images
-im_Mr_rec_g = rgb2gray(im_Mr_rec);
-im_R_rec_g = rgb2gray(im_R_rec);
+disparmap = mapDisparity(im_Mr_rec, im_R_rec);
 
-disparityRange = [200 360];
-disparityMap = disparity(im_Mr_rec_g, im_R_rec_g,...
-    'BlockSize', 5, 'DisparityRange', disparityRange);
-
-figure(3); clf;
-imshow(disparityMap,disparityRange);
-title('Disparity Map');
-colormap jet
-colorbar
