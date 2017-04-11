@@ -13,3 +13,5 @@
 *.log
 *.out
 *.synctex.gz
+
+*.m~
