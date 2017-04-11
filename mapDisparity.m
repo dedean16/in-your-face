@@ -1,21 +1,24 @@
-function disparmap = mapDisparity(im_Mr_rec, im_R_rec)
+function disparmap = mapDisparity(im1, im2)
 % Calculate the disparity map between two RGB images
 % Disparity is calculated for each color separately
 visualise = true;
 
-im_Mr_rec_g = rgb2gray(im_Mr_rec);
-im_R_rec_g = rgb2gray(im_R_rec);
+% [W,H] = size(im1);                      % Get image size
+% disparmap = zeros(W,H,3);               % Initialize disparity map
 
-% Calculate disparity map
-disparityRange = [200 360];
-disparmap = disparity(im_Mr_rec_g, im_R_rec_g,...
-    'BlockSize', 5, 'DisparityRange', disparityRange);
+for rgb = 1:3                           % Loop over RGB index (1, 2 or 3)
+    img1 = im1(:,:,rgb);
+    img2 = im2(:,:,rgb);
+
+    % Calculate disparity map
+    disparRange = [200 360];
+    disparmap(:,:,rgb) = disparity(img1, img2,...
+        'BlockSize', 5, 'DisparityRange', disparRange);
+end
 
 % Visualisation
 if visualise
-    figure(3); clf;
-    imshow(disparmap,disparityRange);
+    figure
+    imshow(disparmap,disparRange);
     title('Disparity Map');
-    colormap jet
-    colorbar
 end
