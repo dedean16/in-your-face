@@ -11,7 +11,7 @@ addpath(genpath(PROJ_DIR));
 %% Start by camera calibration
 
     % Define subject and calibration paths
-    SUBJ = 'subject2';      % Possibilities 1,2,4
+    SUBJ = 'subject4';      % Possibilities 1,2,4
     CALIB= 'Calibratie 1/'; % Possibilities 1,2
 
     % Load stereo calibration 
@@ -45,13 +45,16 @@ switch SUBJ(end);
     case '2'
         edgeThresh  = 0.05;
         strelVal    = 4;
+    case '4'
+        edgeThresh  = 0.03;
+        strelVal    = 5;
 end
     
 
 plotFlag = true;
-[im_L_noBG, mask_L] = removeBackground(im_L, 0.05, 4, plotFlag);
-[im_M_noBG, mask_M] = removeBackground(im_M, 0.05, 4, plotFlag);
-[im_R_noBG, mask_R] = removeBackground(im_R, 0.05, 4, plotFlag);
+[im_L_noBG, mask_L] = removeBackground(im_L, 0.02, 5, plotFlag);
+[im_M_noBG, mask_M] = removeBackground(im_M, 0.02, 5, plotFlag);
+[im_R_noBG, mask_R] = removeBackground(im_R, 0.02, 5, plotFlag);
 
 figure; 
     imshow(im_L_noBG);

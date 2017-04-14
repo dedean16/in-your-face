@@ -15,9 +15,17 @@ edge = ut_edge(im_g, 't', edgeThresh);
 edge_closed = imclose(edge, strel('sphere',strelVal));
     % Fill the image by symmetric padding
 bw_filled   = imfill(padarray(edge_closed,size(edge_closed),'symmetric'),'holes');
-    % Extract the BG mask from filled image
 mask = bw_filled(   size(edge_closed,1)+(1:size(edge_closed,1)),...
                     size(edge_closed,2)+(1:size(edge_closed,2)) );
+                
+    % FAILSAFE: Padarray can fail in case the subject fills the image to
+    % edges
+if sum(mask(:)) > 4/5 * numel(mask)
+    bw_filled   = imfill(edge_closed, 'holes');
+    mask = bw_filled;
+end
+    % Extract the BG mask from filled image
+
 
 	%% Search for the largest connected component in the mask (Supposed to
 	% be the person)
