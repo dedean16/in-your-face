@@ -25,7 +25,7 @@ title('Matrix with gaps')
 gv      = 0;
 a       = 1;
 imax    = 400;
-dmax    = 0.001;
+dmax    = 0.0001;
 vis     = true;
 [Mf,its] = relaxgaps(Mg,gv,a,imax,dmax,vis);
 

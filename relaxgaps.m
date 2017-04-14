@@ -34,6 +34,10 @@ if vis; figure; end
 G = zeros(size(M));
 G(M == gv) = 1;
 
+% Compute initial gap value and fill in gaps with this value
+igv = mean(M(G==0));
+M(G==1) = igv;
+
 % Perform iterative over relaxation
 for i = 1:imax
     % Create shifted matrices
