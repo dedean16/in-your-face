@@ -5,8 +5,10 @@ function [M,its] = relaxgaps(M,gv,a,imax,dmax,vis)
 % Input:
 %  - Mg:    Matrix gaps
 %  - gv:    gap value
-%  - a:     over relaxation value (must be 0<a<1)
-%           a>1 or a<0 will cause instability
+%  - a:     over relaxation value (should be 1<a<2)
+%           a<1 will only be slower in almost all cases
+%           1<a<2 can be unstable
+%           a<0 or a>2 will be unstable
 %  - imax:  max number of iterations
 %  - dmax:  target convergence value
 %  - vis:   Visualise the algorithm
@@ -45,7 +47,7 @@ for i = 1:imax
     M = M + a*DM;                           % Calculate new matrix
     
     % Check target convergence
-    if DM.^2 < dmax                         % If target convergence reached
+    if sum(DM.^2) < dmax                    % If target convergence reached
         break                               % Break out of loop
     end
     
