@@ -22,31 +22,36 @@ subplot(2,2,3); imagesc(Mg)
 title('Matrix with gaps')
 
 % Relax, they're only gaps
-gv      = 0;
-a       = 1;
-imax    = 400;
-dmax    = 0.001;
-vis     = true;
+gv      = 0;                    % Gap value
+a       = 1.5;                  % overshoot parameter
+imax    = 400;                  % Max iterations
+dmax    = 0.001;                % Target convergence value
+vis     = false;                % Visualisation
 [Mf,its] = relaxgaps(Mg,gv,a,imax,dmax,vis);
 
+% Plot
 figure(f)
 subplot(2,2,4); imagesc(Mf)
 title(sprintf('Filled matrix, iterations: %i',its))
 
-% Test relaxation for different a values
-na   = 20;
-amin = 0.1;
-amax = 1;
-vis = false;
+
+% === Test relaxation for different a values ===
+% Set test range for a
+na   = 50;                      % Number of a values to test
+amin = 0.1;                     % Min a value
+amax = 1.9;                     % Max a value
+vis = false;                    % Visualisation
 
 as = linspace(amin,amax,na);    % Create a test value array
 itss = [];
 
+% Test a values
 for a = as
     [Mf,its] = relaxgaps(Mg,gv,a,imax,dmax,vis);
     itss = [itss its];
 end
 
+% Plot
 figure;
 plot(as,itss,'.-')
 xlabel('a values')

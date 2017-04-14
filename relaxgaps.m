@@ -5,7 +5,7 @@ function [M,its] = relaxgaps(M,gv,a,imax,dmax,vis)
 % Input:
 %  - Mg:    Matrix gaps
 %  - gv:    gap value
-%  - a:     over relaxation value (should be 1<a<2)
+%  - a:     overshoot relaxation value (should be 1<a<2)
 %           a<1 will only be slower in almost all cases
 %           1<a<2 can be unstable
 %           a<0 or a>2 will be unstable
@@ -36,14 +36,20 @@ G(M == gv) = 1;
 
 % Perform iterative over relaxation
 for i = 1:imax
-    % Create shifted matrices
+    % Create horizontally and vertically shifted matrices
     M1 = [M(2:end,:);    M(end,:)];
     M2 = [M(1,:);    M(1:end-1,:)];
     M3 = [M(:,2:end)     M(:,end)];
     M4 = [M(:,1)     M(:,1:end-1)];
     
+    % Create diagonally shifted matrices
+    M5 = [M(1,1)	M(1,1:end-1);   M(1:end-1,1)	M(1:end-1,1:end-1)];
+    M6 = [M(1,2:end)    M(1,end);   M(1:end-1,2:end)    M(1:end-1,end)];
+    M7 = [M(2:end,1)    M(2:end,1:end-1);   M(end,1)    M(end,1:end-1)];
+    M8 = [M(2:end,2:end)    M(2:end,end);   M(end,2:end)    M(end,end)];
+    
     % Relaxation computations
-    DM = (0.25 * (M1+M2+M3+M4) - M) .* G;   % Compute difference matrix
+    DM = (0.16*(M1+M2+M3+M4) + 0.09*(M5+M6+M7+M8) - M) .* G;   % Compute difference matrix
     M = M + a*DM;                           % Calculate new matrix
     
     % Check target convergence
