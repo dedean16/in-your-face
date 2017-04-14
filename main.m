@@ -11,7 +11,7 @@ addpath(genpath(PROJ_DIR));
 %% Start by camera calibration
 
     % Define subject and calibration paths
-    SUBJ = 'subject4';      % Possibilities 1,2,4
+    SUBJ = 'subject2';      % Possibilities 1,2,4
     CALIB= 'Calibratie 1/'; % Possibilities 1,2
 
     % Load stereo calibration 
@@ -52,9 +52,9 @@ end
     
 
 plotFlag = true;
-[im_L_noBG, mask_L] = removeBackground(im_L, 0.02, 5, plotFlag);
-[im_M_noBG, mask_M] = removeBackground(im_M, 0.02, 5, plotFlag);
-[im_R_noBG, mask_R] = removeBackground(im_R, 0.02, 5, plotFlag);
+[im_L_noBG, mask_L] = removeBackground(im_L, edgeThresh, strelVal, plotFlag);
+[im_M_noBG, mask_M] = removeBackground(im_M, edgeThresh, strelVal, plotFlag);
+[im_R_noBG, mask_R] = removeBackground(im_R, edgeThresh, strelVal, plotFlag);
 
 figure; 
     imshow(im_L_noBG);
@@ -66,27 +66,41 @@ figure;
     
 %% Normalize image intesities to correspond middle image
 
-im_L_norm = normalizeImages(im_L_noBG, im_M_noBG);
-im_R_norm = normalizeImages(im_R_noBG, im_M_noBG);
+im_L_norm = normalizeImages(im_L, im_M);
+im_R_norm = normalizeImages(im_R, im_M);
 
     
 %% Rectify
 
 
-[im_Mr_rec, im_R_rec] = rectifyStereoImages(im_M_noBG, im_R_norm, sP_MR,...
+[im_Mr_rec, im_R_rec] = rectifyStereoImages(im_M, im_R_norm, sP_MR,...
                             'OutputView','full');
-[im_Ml_rec, im_L_rec] = rectifyStereoImages(im_M_noBG, im_L_norm, sP_ML,...
+[im_Ml_rec, im_L_rec] = rectifyStereoImages(im_M, im_L_norm, sP_ML,...
                             'OutputView','full');
 
+[mask_Mr_rec, mask_R_rec] = rectifyStereoImages(mask_M, mask_R, sP_MR,...
+                            'OutputView','full');
+[mask_Ml_rec, mask_L_rec] = rectifyStereoImages(mask_M, mask_L, sP_ML,...
+                            'OutputView','full');
+
+                        
 figure(2); clf
     subplot(1,2,1);
         imshow(stereoAnaglyph(im_Mr_rec, im_R_rec));
 	subplot(1,2,2);
         imshow(stereoAnaglyph(im_Ml_rec, im_L_rec));
 
-       
+figure(3); clf
+    subplot(1,2,1);
+        imshow(mask_Mr_rec);
+	subplot(1,2,2);
+        imshow(stereoAnaglyph(mask_Ml_rec, mask_L_rec));
+
+        
 
 %% Disparity
 
 disparmap = mapDisparity(im_Mr_rec, im_R_rec);
-
+    % Cut the background out my using the binary mask
+figure;
+    imshow(disparmap.* mask_Mr_rec)
