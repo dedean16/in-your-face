@@ -104,3 +104,9 @@ disparmap = mapDisparity(im_Mr_rec, im_R_rec);
     % Cut the background out my using the binary mask
 figure;
     imshow(disparmap.* mask_Mr_rec)
+
+%%
+disparmap(isnan(disparmap)) = 0;
+disparmap_f = relaxgaps(disparmap,0,1,300,0.001,0);
+figure; imshow(disparmap_f,[])
+
