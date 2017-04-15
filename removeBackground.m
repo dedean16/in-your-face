@@ -45,15 +45,24 @@ im_noBG = im(:,:,:) .* repmat(uint8(mask), [1,1,3]);
 
     %% Plot if plotFlag allows
 if plotFlag
-    figure(101);clc;
-    subplot(2,2,1);
-        imshow(rgb2gray(im));
-    subplot(2,2,2);
+    txt_pos = [60,60];
+    figure('Position',[472 108 689 632]) ;
+	CreateAxes(2,2,1, 0.1,[0,0],[0,0]);
+        imshow(im_g);
+        text(txt_pos(1), txt_pos(2), '(a)',...
+            'Color', 'w', 'Fontsize', 16);
+    CreateAxes(2,2,2, 0.1,[0,0],[0,0]);
         imshow(edge);
-    subplot(2,2,3);
+        text(txt_pos(1), txt_pos(2), '(b)',...
+            'Color', 'w', 'Fontsize', 16);
+	CreateAxes(2,2,3, 0.1,[0,0],[0,0]);
         imshow(edge_closed);
-    subplot(2,2,4);
+        text(txt_pos(1), txt_pos(2), '(c)',...
+            'Color', 'w', 'Fontsize', 16);
+    CreateAxes(2,2,4, 0.1,[0,0],[0,0]);
         imshow(mask);
+        text(txt_pos(1), txt_pos(2), '(d)',...
+            'Color', 'w', 'Fontsize', 16);
 end
 
 

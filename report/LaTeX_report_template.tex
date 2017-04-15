@@ -129,20 +129,21 @@
 \usepackage{ifpdf}
 %\usepackage{paralist}
 %\usepackage{amsfonts}
- \usepackage{subfig}
-%\usepackage{subcaption}
-%\usepackage[pdftex]{graphicx}
+% \usepackage{subfig}
+\usepackage{subcaption}
   \usepackage{epstopdf}
    \ifpdf
-  \usepackage[pdftex]{graphicx}
-  \graphicspath{images/}
-  \DeclareGraphicsExtensions{.pdf,.jep,.png}
+	\usepackage{graphicx}
+  	\graphicspath{{Pics/}}  
+  	\DeclareGraphicsExtensions{.pdf,.jep,.png}
  \else
   \usepackage[dvips]{graphicx}
   \graphicspath{images/}
   \DeclareGraphicsExtensions{.eps}
  \fi
-
+ 
+\usepackage{hyperref}
+\def\figureautorefname{Fig.}
 
 
 %
@@ -387,7 +388,7 @@
 
 % *** PDF, URL AND HYPERLINK PACKAGES ***
 %
-%\usepackage{url}
+\usepackage{url}
 % url.sty was written by Donald Arseneau. It provides better support for
 % handling and breaking URLs. url.sty is already installed on most LaTeX
 % systems. The latest version can be obtained at:
@@ -428,8 +429,8 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{Author 1 name,~\IEEEmembership{email address,~student id,~educational program}
-        
+\author{Roni Hyt\"{o}nen,~\IEEEmembership{r.h.hytonen@student.utwente.nl,~s1887033,~BME}  
+      
         and~Author 2 name,~\IEEEmembership{email address,~student id,~educational program}% <-this % stops a space
 
 % <-this % stops a space
@@ -456,8 +457,8 @@
 
 
 % The paper headers
-\markboth{insert date here, followed by the name of course}%
-{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Journals}
+\markboth{\today, Image processing and Computer Vision}%
+{Project 3: 3D face reconstruction}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
 % 
@@ -489,7 +490,11 @@
 
 \begin{abstract}
 %\boldmath
-Add a short abstract here containing at most 100 words. Abstracts do not contain symbols, special characters, math, or references. Describe the context shortly, and summarize the research question and the main items from the discussion.
+In this project three stereoscopic photographs are combined to form a three-dimensional face reconstruction. 
+For this purpose the camera parameters are defined, stereo images rectified, and a disparity map is computed.
+Additionally, a background removal is implemented, as well as a relaxation method for interpolation of regions where reconstruction failed.
+
+\textit{Add a short abstract here containing at most 100 words. Abstracts do not contain symbols, special characters, math, or references. Describe the context shortly, and summarize the research question and the main items from the discussion.}
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -556,6 +561,34 @@ A short inventory of what has been used.
 Start with defining the overview of the problem in a more mathematical context. What is the input? What is the desired output? (Introduce mathematical symbols for the input and output variables). What is in rough steps the strategy to get the output from the input?
  
 Next, define the subtasks in more detail. For each subtask, introduce variables whenever needed, and set-up the mathematical relations (equations) between these variables, possibly combined with pseudo code.  Do \textbf{no}t use Matlab code. Describe your algorithm such that the principle of operation becomes clear. For that, use ‘mathematical style’ pseudo code. See: \href{https://en.wikipedia.org/wiki/Pseudocode\#https://en.wikipedia.org/wiki/Pseudocode}{https://en.wikipedia.org/wiki/Pseudocode} and pseudo-code examples provided in \href{https://en.wikipedia.org/wiki/Category:Articles_with_example_pseudocode\#https://en.wikipedia.org/wiki/Category:Articles_with_example_pseudocode}{https://en.wikipedia.org/wiki/Category:Articles\_with\_example \_pseudocode}. The only place in the report that contains Matlab code is the appendix (you should add your listing as an annex).
+
+\subsubsection{Background Detection}
+A large part of the images consists uniformly coloured background.
+Because the tone of the background is very similar to skin colour, colour-based segmentation methods yield easily incorrect results. 
+However, since the background is fairly smooth, whereas the foreground with person is more heavily textured. 
+Because of this an edge-based segmentation is a logical choice for background removal.
+
+The method itself has been implemented in four simple steps that are also illustrated in \autoref{fig:backgroundRemoval}.
+First, the colour image is converted to gray scale in order to facilitate subsequent steps.
+Then, the intensity gradients in the image are detected using Canny method.
+Because of the nature of bust images, there are very few edges arising from the background, and numerous ones from the bust itself.
+However, there are multiple breaks in the bust outline, as the skin tone and intensity matches that of the background. 
+Thus a morphological closing is required in order to connect the outline of the bust before finally morphologically filling the image.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.46\textwidth]{BGRemoval.png}
+\caption{Steps of background detection algorithm:\\
+\textbf{(a)} The gray scale bust image\\
+\textbf{(b)} Edge detection\\
+\textbf{(c)} Morphological closing\\
+\textbf{(d)} Hole filling
+}
+\label{fig:backgroundRemoval}
+\end{figure}
+
+
 \subsubsection{Performance evaluation}
 For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.
 \section{Results}
