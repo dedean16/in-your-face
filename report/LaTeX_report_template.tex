@@ -1,102 +1,6 @@
 %
-
-%% bare_jrnl.tex
-%% V1.3
-%% 2007/01/11
-%% by Michael Shell
-%% see http://www.michaelshell.org/
-%% for current contact information.
-%%
-%% This is a skeleton file demonstrating the use of IEEEtran.cls
-%% (requires IEEEtran.cls version 1.7 or later) with an IEEE journal paper.
-%%
-%% Support sites:
-%% http://www.michaelshell.org/tex/ieeetran/
-%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
-%% and
-%% http://www.ieee.org/
-
-
-
-% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
-% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
-% *** with production work. IEEE's font choices can trigger bugs that do  ***
-% *** not appear when using other class files.                            ***
-% The testflow support page is at:
-% http://www.michaelshell.org/tex/testflow/
-
-
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%
-%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
-%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex
-%%*************************************************************************
-
-% Note that the a4paper option is mainly intended so that authors in
-% countries using A4 can easily print to A4 and see how their papers will
-% look in print - the typesetting of the document will not typically be
-% affected with changes in paper size (but the bottom and side margins will).
-% Use the testflow package mentioned above to verify correct handling of
-% both paper sizes by the user's LaTeX system.
-%
-% Also note that the "draftcls" or "draftclsnofoot", not "draft", option
-% should be used if it is desired that the figures are to be displayed in
-% draft mode.
-%
 \documentclass[journal]{IEEEtran}
 %
-% If IEEEtran.cls has not been installed into the LaTeX system files,
-% manually specify the path to it like:
-% \documentclass[journal]{../sty/IEEEtran}
-
-
-
-% Some very useful LaTeX packages include:
-% (uncomment the ones you want to load)
-
-
-% *** MISC UTILITY PACKAGES ***
-%
-%\usepackage{ifpdf}
-% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
-% compilation based on whether the output is pdf or dvi.
-% usage:
-% \ifpdf
-%   % pdf code
-% \else
-%   % dvi code
-% \fi
-% The latest version of ifpdf.sty can be obtained from:
-% http://www.ctan.org/tex-archive/macros/latex/contrib/oberdiek/
-% Also, note that IEEEtran.cls V1.7 and later provides a builtin
-% \ifCLASSINFOpdf conditional that works the same way.
-% When switching from latex to pdflatex and vice-versa, the compiler may
-% have to be run twice to clear warning/error messages.
-
-
-
-
 
 
 % *** CITATION PACKAGES ***
@@ -128,7 +32,7 @@
 % *** GRAPHICS RELATED PACKAGES ***
 \usepackage{ifpdf}
 %\usepackage{paralist}
-%\usepackage{amsfonts}
+\usepackage{amsfonts}
 % \usepackage{subfig}
 \usepackage{subcaption}
   \usepackage{epstopdf}
@@ -191,7 +95,7 @@
 
 % *** MATH PACKAGES ***
 %
-%\usepackage[cmex10]{amsmath}
+\usepackage[cmex10]{amsmath}
 % A popular package from the American Mathematical Society that provides
 % many useful and powerful commands for dealing with mathematics. If using
 % it, be sure to load this package with the cmex10 option to ensure that
@@ -214,7 +118,7 @@
 
 % *** SPECIALIZED LIST PACKAGES ***
 %
-%\usepackage{algorithmic}
+\usepackage{algorithmic}
 % algorithmic.sty was written by Peter Williams and Rogerio Brito.
 % This package provides an algorithmic environment fo describing algorithms.
 % You can use the algorithmic environment in-text or within a figure
@@ -541,7 +445,15 @@ four key words in alphabetical order, separated by commas.
 % 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\IEEEPARstart{T}{he} introduction contains (1) a background, (2) the definition of the problem that is addressed possibly with a research question and subquestions, (3) a short outline of the report.
+\IEEEPARstart{3}{D} face reconstruction is a relevant problem for e.g. the purposes of face recognition and animation \cite{3D_Peng}.
+The most novel methods include complex modalities such as laser scanning and multi-view cinematography, but the same task can be completed with a pair of stereo images \cite{Creation_Krutikova}.
+
+In this project three images of subject's bust are used to first reconstruct two depth images, that are then combined to comprise a full frontal 3D image.
+For this stereo calibrations of the cameras and image rectifications are performed, the disparity map is computed, and the background is removed.
+From the disparity maps depth images are reconstructed, and those are then converted to surface meshes, which are finally combined to yield the 3D mesh of the full bust.
+
+
+introduction contains (1) a background, (2) the definition of the problem that is addressed possibly with a research question and subquestions, (3) a short outline of the report.
 
 Note 1: the problem is \textbf{not} how to create a Matlab function. The definition of the problem should be at a much higher level of abstraction.
 
@@ -552,10 +464,12 @@ Note 2: The introduction should be readable for a less technically skilled audie
 \section{Methods and Materials}
 
 \subsection{Materials}
-A short inventory of what has been used.
+A set of twenty calibration images was used to perform the stereo camera calibration. 
+The images were taken simultaneously from three sides with a calibration checkerboard (10mm squares) in view.
+Accordingly, the subjects consisted of three persons, imaged with the three-camera system. 
+In total five images of each subject were taken, each with a different facial expression.
 
-% needed in second column of first page if using \IEEEpubid
-%\IEEEpubidadjcol
+
 \subsection{Methods}
 \subsubsection{Analysis}
 Start with defining the overview of the problem in a more mathematical context. What is the input? What is the desired output? (Introduce mathematical symbols for the input and output variables). What is in rough steps the strategy to get the output from the input?
@@ -568,9 +482,9 @@ Because the tone of the background is very similar to skin colour, colour-based 
 However, since the background is fairly smooth, whereas the foreground with person is more heavily textured. 
 Because of this an edge-based segmentation is a logical choice for background removal.
 
-The method itself has been implemented in four simple steps that are also illustrated in \autoref{fig:backgroundRemoval}.
+The method itself has been implemented in four simple steps, also illustrated in \autoref{fig:backgroundRemoval}.
 First, the colour image is converted to gray scale in order to facilitate subsequent steps.
-Then, the intensity gradients in the image are detected using Canny method.
+Then the intensity gradients in the image are detected using Canny method.
 Because of the nature of bust images, there are very few edges arising from the background, and numerous ones from the bust itself.
 However, there are multiple breaks in the bust outline, as the skin tone and intensity matches that of the background. 
 Thus a morphological closing is required in order to connect the outline of the bust before finally morphologically filling the image.
@@ -588,6 +502,20 @@ Thus a morphological closing is required in order to connect the outline of the 
 \label{fig:backgroundRemoval}
 \end{figure}
 
+
+\subsubsection{Image normalisation}
+
+The bust stereo images have slightly different lighting effects for each angle, which may cause instability later on.
+For this purpose both left and right stereo images were normalized to correspond the middle one in regards to the mean and variance of their intensities.
+
+The variance and mean were normalised as 
+
+\begin{align}
+J_{x} &= I_{x} \times \dfrac{\texttt{var}(I_{mid})}{\texttt{var}(I_x)}\\
+K_{x} &= J_{x} \times \dfrac{\texttt{mean}(I_{mid})}{\texttt{mean}(J_x)},
+\end{align}
+
+\noindent where I, J and K are the non-normalised, variance normalised, mean normalised images, respectively.
 
 \subsubsection{Performance evaluation}
 For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.
