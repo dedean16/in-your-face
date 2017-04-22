@@ -125,13 +125,14 @@ disparmap_L = mapDisparity(im_Ml_rec, im_L_rec);
 figure;
     imshow(disparmap_R)
 figure;
-    imshow(disparmap_L) 
+    imshow(disparmap_L)
 
 %% Fill Gaps with relaxation
+disparmap = disparmap_R;
 disparmap(isnan(disparmap)) = 0;
 disparmap(mask_Mr_rec==1 & disparmap==0) = -1;
 disparmap_f = relaxgaps(disparmap.*mask_Mr_rec,-1,1,300,0.001,0);
 figure; imshow(disparmap_f,[])
 
 %% Plot Face Mesh
-facemesh(disparmap_f)
+facemesh(disparmap_f,im_Mr_rec)
