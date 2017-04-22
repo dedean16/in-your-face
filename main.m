@@ -132,7 +132,10 @@ disparmap = disparmap_R;
 disparmap(isnan(disparmap)) = 0;
 disparmap(mask_Mr_rec==1 & disparmap==0) = -1;
 disparmap_f = relaxgaps(disparmap.*mask_Mr_rec,-1,1,300,0.001,0);
+
+figure; imshow(disparmap.*mask_Mr_rec,[])
 figure; imshow(disparmap_f,[])
+
 
 %% Plot Face Mesh
 facemesh(disparmap_f,im_Mr_rec)
