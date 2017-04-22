@@ -323,15 +323,6 @@
 % can use linebreaks \\ within to get better formatting as desired
 \title{Title}
 %
-%
-% author names and IEEE memberships
-% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
-% a structure at a ~ so this keeps an author's name from being broken across
-% two lines.
-% use \thanks{} to gain access to the first footnote area
-% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
-% was not built to handle multiple paragraphs
-%
 
 \author{Roni Hyt\"{o}nen,~\IEEEmembership{r.h.hytonen@student.utwente.nl,~s1887033,~BME}  
       
@@ -340,24 +331,6 @@
 % <-this % stops a space
 }
 
-% note the % following the last \IEEEmembership and also \thanks - 
-% these prevent an unwanted space from occurring between the last author name
-% and the end of the author line. i.e., if you had this:
-% 
-% \author{....lastname \thanks{...} \thanks{...} }
-%                     ^------------^------------^----Do not want these spaces!
-%
-% a space would be appended to the last name and could cause every name on that
-% line to be shifted left slightly. This is one of those "LaTeX things". For
-% instance, "\textbf{A} \textbf{B}" will typeset as "A B" not "AB". To get
-% "AB" then you have to do: "\textbf{A}\textbf{B}"
-% \thanks is no different in this regard, so shield the last } of each \thanks
-% that ends a line with a % and do not let a space in before the next \thanks.
-% Spaces after \IEEEmembership other than the last one are OK (and needed) as
-% you are supposed to have spaces between the names. For what it is worth,
-% this is a minor point as most people would not even notice if the said evil
-% space somehow managed to creep in.
-
 
 
 % The paper headers
@@ -365,27 +338,6 @@
 {Project 3: 3D face reconstruction}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
-% 
-% *** Note that you probably will NOT want to include the author's ***
-% *** name in the headers of peer review papers.                   ***
-% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
-% you desire.
-
-
-
-
-% If you want to put a publisher's ID mark on the page you can do it like
-% this:
-%\IEEEpubid{0000--0000/00\$00.00~\copyright~2007 IEEE}
-% Remember, if you use this you must call \IEEEpubidadjcol in the second
-% column for its text to clear the IEEEpubid mark.
-
-
-
-% use for special paper notices
-%\IEEEspecialpapernotice{(Invited Paper)}
-
-
 
 
 % make the title area
@@ -466,7 +418,7 @@ Note 2: The introduction should be readable for a less technically skilled audie
 \subsection{Materials}
 A set of twenty calibration images was used to perform the stereo camera calibration. 
 The images were taken simultaneously from three sides with a calibration checkerboard (10mm squares) in view.
-Accordingly, the subjects consisted of three persons, imaged with the three-camera system. 
+Accordingly, the subjects consisted of three persons, imaged with the three-camera system so, that one image was taken straight from the middle, one from the left and one from the right. 
 In total five images of each subject were taken, each with a different facial expression.
 
 
@@ -516,6 +468,19 @@ K_{x} &= J_{x} \times \dfrac{\texttt{mean}(I_{mid})}{\texttt{mean}(J_x)},
 \end{align}
 
 \noindent where I, J and K are the non-normalised, variance normalised, mean normalised images, respectively.
+
+
+\subsubsection{Stereo calibration}
+
+The three-camera system was calibrated using the calibration image set explained in the section \textit{Materials}. 
+The calibration was done in pairs, pairing up the middle image with both left and right images.
+A three-coefficient stereo calibration was performed using Matlab's \textit{Stereo Camera Calibrator}.
+
+\subsubsection{Rectification}
+
+The image pairs were rectified using Matlab's \textit{rectifyStereoImages}-function with the determined stereo calibration parameters.
+
+
 
 \subsubsection{Performance evaluation}
 For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.
