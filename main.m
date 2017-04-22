@@ -11,8 +11,9 @@ addpath(genpath(PROJ_DIR));
 %% Start by camera calibration
 
     % Define subject and calibration paths
-    SUBJ = 'subject2';      % Possibilities 1,2,4
+    SUBJ = 'subject1';      % Possibilities 1,2,4
     CALIB= 'Calibratie 1/'; % Possibilities 1,2
+    IMG  = '_2';            % Possibilties 1,2,365,729,1093,1457
 
     % Load stereo calibration 
 load([PROJ_DIR, CALIB, 'sP_MR.mat'])
@@ -20,9 +21,9 @@ load([PROJ_DIR, CALIB, 'sP_ML.mat'])
 load([PROJ_DIR, CALIB, 'sP_LR.mat'])
 
     % Load face images
-im_L = imread([PROJ_DIR, SUBJ, '/', SUBJ, 'Left/', SUBJ, '_Left_1.jpg']);
-im_M = imread([PROJ_DIR, SUBJ, '/', SUBJ, 'Middle/', SUBJ, '_Middle_1.jpg']);
-im_R = imread([PROJ_DIR, SUBJ, '/', SUBJ, 'Right/', SUBJ, '_Right_1.jpg']);
+im_L = imread([PROJ_DIR, SUBJ, '/', SUBJ, 'Left/',   SUBJ, '_Left',  IMG,'.jpg']);
+im_M = imread([PROJ_DIR, SUBJ, '/', SUBJ, 'Middle/', SUBJ, '_Middle',IMG,'.jpg']);
+im_R = imread([PROJ_DIR, SUBJ, '/', SUBJ, 'Right/',  SUBJ, '_Right', IMG,'.jpg']);
 
 
 figure(1); clf
