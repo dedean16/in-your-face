@@ -18,9 +18,10 @@ for rgb = 1:3                               % Loop over RGB index (1, 2 or 3)
 end
 
 %% Combine color channels into one image: mean of nonzero values
-zeromap    = sum(disparmap_rgb == 0, 3);
-summap     = sum(disparmap_rgb, 3);
-disparmap    = summap./(3 - zeromap);
+zeromap    = sum(disparmap_rgb == 0, 3);    % Count number of failed channels per pixel
+summap     = sum(disparmap_rgb, 3);         % Calculate sum of different channels per pixel
+disparmap  = summap./(3 - zeromap);         % Calculate average disparity over channels per pixel
+disparmap(zeromap > 1) = 0;                 % Disregard pixels with > 1 failed channel
 
 % Visualisation
 if visualise
