@@ -47,6 +47,11 @@ if visualise
     subplot(2,2,4)
     imshow(disparmap,[]);
     title('Mean Disparity map');
+    
+    % Show disparity map RGB
+    figure;
+    imshow(disparmap_rgb./max(disparmap(:)));
+    title('Disparity map - RGB');
 end
 
 

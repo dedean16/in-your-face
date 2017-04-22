@@ -170,7 +170,7 @@
 
 \author{Roni Hyt\"{o}nen,~\IEEEmembership{r.h.hytonen@student.utwente.nl,~s1887033,~BME}  
       
-        and~Author 2 name,~\IEEEmembership{email address,~student id,~educational program}% <-this % stops a space
+        and~Dani\"el Cox,~\IEEEmembership{d.w.s.cox@student.utwente.nl,~s1228579,~APH}% <-this % stops a space
 
 % <-this % stops a space
 }
@@ -318,15 +318,22 @@ The rectified images have each row of pixels corresponding each other, making th
 \subsubsection{Disparity}
 
 For the rectified images each world point lies on the same row, but at the different column. 
-The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range of 0 and 640.
+The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range of 0 and 640. %%% refer to disparity function in appendix?
 
-The disparity was computed separately for each colour channel, and the final value was determined as the mean of successfully determined values.
-If only one colour channel yields a result and the two others fail, the result is discarded altogether and the disparity is acquired by means of interpolation.
+The disparity was computed separately for each colour channel. If the disparity for a certain pixel is unresolved, it returns a 0. The final disparity value for each pixel was calculated as the mean of successfully determined values. Though this method slightly increases the number of matched pixels, this does mean there will still be `gaps' in the disparity map for all the parts that are fully unresolved. These can be observed in figure \ref{fig:disparity-rgb}. In the next step, these gaps are filled with sensible values using an interpolation algorithm.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{Pics/disparity-RGB.png}
+    \caption{Disparity map for the RGB channels. For the colored pixels, only one or two channels have a disparity match. For the grey or white pixels, all channels are resolved. Black represents fully unresolved pixels.}
+    \label{fig:disparity-rgb}
+\end{figure}
+
+% If only one colour channel yields a result and the two others fail, the result is discarded altogether and the disparity is acquired by means of interpolation. ----> This is no longer used, as it didn't seem to be an effective way of removing errors.
 
 
 \subsubsection{Interpolation}
-
-
+The interpolation algorithm fills in gaps of an input image using over relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value.
 
 \subsubsection{Performance evaluation}
 For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.
