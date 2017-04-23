@@ -242,7 +242,7 @@ Multiple images of each subject were taken, each with a different facial express
 
 \section{Methods}
 
-\subsection{Analysis}
+\subsection{Analysis overview}
 
 The aim of the algorithm is to read three stereo images and their stereo camera calibration parameters and reconstruct the face of the subject from these.
 The steps of the algorithm are 
@@ -251,13 +251,15 @@ The steps of the algorithm are
 \item Read the images and calibration parameters
 \item Use background detection to create masks of the person's bust
 \item Normalise the mean and variation of each colour channel's intensity
-\item Rectify the images and masks using Matlab's \textit{rectifyStereoImage}
-\item Compute the disparity for Left and Middle, and Right and Middle -image pairs using \textit{mapDisparity}. The \textit{mapDisparity} then calls for Matlab's \textit{disparity}-function for each colour channel.
-\item Interpolate the gaps left in disparity map with \textit{relaxgaps}
-\item Remove spikes with \textit{laplacianFilter}
+\item Rectify the images and masks using Matlab's \texttt{rectifyStereoImage}
+\item Compute the disparity for Left/Middle, and Right/Middle image pairs using \texttt{mapDisparity}. The \texttt{mapDisparity} then calls for Matlab's \texttt{disparity} function for each colour channel.
+\item Interpolate the gaps left in disparity map with \texttt{relaxgaps}
+\item Remove spikes with \texttt{laplacianFilter}
 \item Transfer the disparity maps into point clouds
 
 \end{enumerate}
+
+The code for all of these functions can be found in the appendix.
 
 \subsection{Background Detection}
 A large part of the images consists of uniformly coloured background.
