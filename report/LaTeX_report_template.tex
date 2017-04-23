@@ -172,7 +172,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{Title}
+\title{3D face reconstruction from stereoscopic images}
 %
 
 \author{Roni Hyt\"{o}nen,~\IEEEmembership{r.h.hytonen@student.utwente.nl,~s1887033,~BME}  
@@ -323,7 +323,7 @@ The rectified images have each row of pixels corresponding each other, making th
 \subsection{Disparity}
 
 For the rectified images each world point lies on the same row, but at the different column. 
-The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between -640 and 480, as the majority of bust-specific values were determined to lie within these boundaries.  %%% refer to disparity function in appendix?
+The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between $ -640 $ and $ 480 $, as the majority of bust-specific values were determined to lie within these boundaries.  %%% refer to disparity function in appendix?
 
 The disparity was computed separately for each colour channel. If the disparity for a certain pixel is unresolved, it returns a 0. The final disparity value for each pixel was calculated as the mean of successfully determined values. Though this method slightly increases the number of matched pixels, this does mean there will still be `gaps' in the disparity map for all the parts that are fully unresolved. These can be observed in figure \ref{fig:disparity-rgb}. In the next step, these gaps are filled with sensible values using an interpolation algorithm.
 
@@ -355,7 +355,7 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
         \centering
         \includegraphics[width=\linewidth]{Pics/disparity-fill.png}
         \caption{Disparity gaps are filled using iterative relaxation.}
-        \label{fig:disparity-filled}
+        \label{fig:disparity-fill}
     \end{subfigure}
     ~
     \begin{subfigure}[t]{0.45\linewidth}
