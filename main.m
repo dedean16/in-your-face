@@ -128,14 +128,22 @@ figure;
     imshow(disparmap_L)
 
 %% Fill Gaps with relaxation
+gv = -1;
+
 disparmap = disparmap_R;
 disparmap(isnan(disparmap)) = 0;
-disparmap(mask_Mr_rec==1 & disparmap==0) = -1;
-disparmap_f = relaxgaps(disparmap.*mask_Mr_rec,-1,1,300,0.001,0);
+disparmap(mask_Mr_rec==1 & disparmap==0) = gv;
+disparmap_f = relaxgaps(disparmap.*mask_Mr_rec,gv,1,300,0.001,0);
 
 figure; imshow(disparmap.*mask_Mr_rec,[])
 figure; imshow(disparmap_f,[])
 
+%% Laplacian filter
+threshold = 1;
+disparmap_fl = laplacianFilter(disparmap_f,threshold,gv);
+figure; imshow(disparmap_fl,[]); title('Laplacian filtered')
+disparmap_flf = relaxgaps(disparmap_fl,gv,1,300,0.001,0);
+figure; imshow(disparmap_flf,[]); title('Relaxed Laplacian filtered')
 
 %% Plot Face Mesh
-facemesh(disparmap_f,im_Mr_rec)
+facemesh(disparmap_flf,im_Mr_rec)
