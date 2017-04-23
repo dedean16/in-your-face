@@ -366,9 +366,6 @@ where $ \mathbf{f} $ is the disparity map, $ \mathbf{G}_\sigma $ is a Gaussian f
 
 In the next step, the threshold is applied and the `spiky' patches are replaced by a constant value, which marks the gaps to be replaced by the interpolation algorithm of section \ref{sec:interpolation}. As can be observed in figure \ref{fig:disparity-flf}, though not perfect, the filter removes a reasonable portion of the errors. However, due to the nature of the algorithm (to be precise, the nature of the blurred Laplacian) the larger patches are not fixed.
 
-\subsection{Performance evaluation}
-\gray{For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.}
-
 
 \section{Results}
 
@@ -406,9 +403,9 @@ This is especially apparent in case of subject 3 in figure \ref{fig:results_S3-r
 
 \section{Discussion}
 
-The results could be further improved by combining the left and right meshes to yield a more complete view of the face. 
+The results could be further improved by combining the left and right point clouds to yield a more complete view of the face. 
 This could also be used to further average out some of the spiking in the center region of the face.
-In this case the combining of two surfaces was unsuccessful, and Matlab's \textit{pcregrigid}-function only yielded a partial overlay, as depicted in figure \ref{fig:combined-faces}.
+In this case the combining of two surfaces was unsuccessful, and Matlab's \texttt{pcregrigid}-function only yielded a partial overlay, as depicted in figure \ref{fig:combined-faces}.
 A better result could be obtained e.g. by first determining a rough estimation of correct location manually, and then trying to match them with an iterative closest point method.
 Another possibility would be to fit both surfaces on top of a face archetype, and once the crude characteristics are in place, try to e.g. average the non-matching parts.
 
@@ -418,30 +415,31 @@ The effect of colour normalisation on the end result was not studied, but it was
 
 
 \section{Conclusion}
-\gray{A conclusion reviews the main points of the paper. Describe the overall implication of the results to the original problem statement (or research questions). Do not replicate the abstract as the conclusion. A conclusion might also elaborate on the importance of the work, or suggest applications.}
+In this project, 3D point clouds of the faces of several subjects were successfully reconstructed. Though these point clouds still contain some parts with errors, the main features of the faces are successfully reconstructed in 3D.
+
 \appendices
 \section{Additional results}
 \FloatBarrier
 
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{result_S1_356}
+    \includegraphics[width=0.8\linewidth]{result_S1_356}
 	\captionof{figure}{Reconstruction results for subject 1 with a different facial expression. Right view.}
 	\label{fig:result_S1_356}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[t]{\linewidth}
+    \begin{subfigure}[t]{0.8\linewidth}
         \centering
         \includegraphics[width=\linewidth]{result_S2_R}
 		\caption{}
 		\label{fig:result_S2_R}
     \end{subfigure}
     
-    \begin{subfigure}[t]{\linewidth}
+    \begin{subfigure}[t]{0.8\linewidth}
         \centering
 		\includegraphics[width=\linewidth]{result_S2_L}
 		\caption{}
@@ -555,7 +553,6 @@ The effect of colour normalisation on the end result was not studied, but it was
 %
 
 
-
 \section{Matlab scripts}
 
 
@@ -577,38 +574,29 @@ numbersep=3pt, % this defines how far the numbers are from the text
 }
 
 %\lstinputlisting{convertvideo.m}
-\subsection{main}
+\subsection{\texttt{main.m}}
 \label{sec:main}
 \lstinputlisting[language=Matlab]{../main.m}
 
-\subsection{removeBackground}
+\subsection{\texttt{removeBackground.m}}
 \label{sec:removeBackground}
 \lstinputlisting[language=Matlab]{../removeBackground.m}
 
-\subsection{normalizeImages}
+\subsection{\texttt{normalizeImages.m}}
 \label{sec:normalizeImages}
 \lstinputlisting[language=Matlab]{../normalizeImages.m}
 
-\subsection{mapDisparity}
+\subsection{\texttt{mapDisparity.m}}
 \label{sec:mapDisparity}
 \lstinputlisting[language=Matlab]{../mapDisparity.m}
 
-\subsection{relaxgaps}
+\subsection{\texttt{relaxgaps.m}}
 \label{sec:relaxgaps}
 \lstinputlisting[language=Matlab]{../relaxgaps.m}
 
-\subsection{facemesh}
+\subsection{\texttt{facemesh.m}}
 \label{sec:facemesh}
 \lstinputlisting[language=Matlab]{../facemesh.m}
-
-
-
-% you can choose not to have a title for an appendix
-% if you want by leaving the argument blank
-\section{Guideline for References}
-In text, refer simply to the reference number. Do not use �Ref.� or �reference� except at the beginning of a sentence: �Reference [3] shows ... .� 
-
-
 
 
 % Can use something like this to put references on a page
