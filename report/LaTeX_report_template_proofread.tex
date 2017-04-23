@@ -1,6 +1,4 @@
-
-%BEGIN_FOLD
-
+%
 \documentclass[journal]{IEEEtran}
 %
 
@@ -162,10 +160,6 @@
 
 \usepackage{hyperref}
 \usepackage{placeins}
-%END_FOLD
-
-% easily mark stuff gray (for distinguising the dummy text)
-\newcommand{\gray}[1]{\color{gray}#1\color{black}}
 
 \begin{document}
 
@@ -238,6 +232,7 @@ From the disparity maps depth images are reconstructed and repaired, and those a
 The images are then finally combined to yield the 3D mesh of the full bust.
 
 
+
 \section{Materials}
 A set of twenty calibration images was used to perform the stereo camera calibration. 
 The images were taken simultaneously from three sides with a calibration checkerboard (10mm squares) in view.
@@ -278,15 +273,15 @@ Thus a morphological closing is required in order to connect the outline of the 
 
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{BGRemoval.png}
-    \caption{Steps of background detection algorithm:\\
-        \textbf{(a)} The gray scale bust image\\
-        \textbf{(b)} Edge detection\\
-        \textbf{(c)} Morphological closing\\
-        \textbf{(d)} Hole filling
-    }
-    \label{fig:backgroundRemoval}
+\centering
+\includegraphics[width=\linewidth]{BGRemoval.png}
+\caption{Steps of background detection algorithm:\\
+\textbf{(a)} The gray scale bust image\\
+\textbf{(b)} Edge detection\\
+\textbf{(c)} Morphological closing\\
+\textbf{(d)} Hole filling
+}
+\label{fig:backgroundRemoval}
 \end{figure}
 
 
@@ -321,11 +316,11 @@ The rectified images have each row of pixels corresponding each other, making th
 \subsection{Disparity}
 
 For the rectified images each world point lies on the same row, but at the different column. 
-The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between -640 and 480, as the majority of bust-specific values were determined to lie within these boundaries.  %%% refer to disparity function in appendix?
+The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between -640 and 480, as the majority of bust-specific values were determined to lie within these boundaries.  
 
 The disparity was computed separately for each colour channel. If the disparity for a certain pixel is unresolved, it returns a 0. The final disparity value for each pixel was calculated as the mean of successfully determined values. Though this method slightly increases the number of matched pixels, this does mean there will still be `gaps' in the disparity map for all the parts that are fully unresolved. These can be observed in figure \ref{fig:disparity-rgb}. In the next step, these gaps are filled with sensible values using an interpolation algorithm.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.6\linewidth]{Pics/disparity-RGB.png}
     \caption{Disparity map for the RGB channels. For the coloured pixels, only one or two channels have a disparity match. For the grey or white pixels, all channels are resolved. Black represents fully unresolved pixels.}
@@ -335,10 +330,6 @@ The disparity was computed separately for each colour channel. If the disparity 
 
 \subsection{Interpolation}
 The interpolation algorithm fills in gaps of an input image using iterative relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, on every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value.
-
-\subsection{Interpolation}
-\label{sec:interpolation}
-The interpolation algorithm fills in gaps of an input image using iterative relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value. %%% Explain about instability and 8 neighbours
 
 \begin{figure}[h]
     \centering
@@ -355,37 +346,9 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
         \caption{Disparity gaps are filled using iterative relaxation.}
         \label{fig:disparity-filled}
     \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Pics/disparity-lapf.png}
-        \caption{Disparity map contains errors which generally show up as `spiky' patches. A blurred Laplacian filter detects these patches.}
-        \label{fig:disparity-lapf}
-    \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Pics/disparity-flf.png}
-        \caption{By means of a threshold, the spiky areas are removed and filled with the relaxation function.}
-        \label{fig:disparity-flf}
-    \end{subfigure}
-    \caption{Disparity gaps interpolation and filtering.}
+    \caption{Disparity gaps interpolation.}
     \label{fig:disparity-fillgap}
 \end{figure}
-
-\subsection{Laplacian filter}
-In some small parts of the image, the disparity algorithm finds the wrong value. These can be observed in figure \ref{fig:disparity-fill} as white or dark gray patches. These values are most often quite different in magnitude from the rest of the face. As such, a filter function is used to remove `spiky' areas. This function calculates the absolute value of the Laplacian and applies a convolution with a gaussian function. This operation can be represented with the following equation:
-
-\begin{equation}
-    \mathbf{f}_{filt} = \mathbf{f} \cdot \mathrm{sgn}\!\left(\mathbf{G}_\sigma * |\nabla^2\mathbf{f}| - t\right)
-\end{equation}
-
-where $ \mathbf{f} $ is the disparity map, $ \mathbf{G}_\sigma $ is a Gaussian function and $ t $ is the assigned threshold. The result of $ \mathbf{G}_\sigma * |\nabla^2\mathbf{f}| $ can be observed in figure \ref{fig:disparity-lapf}. This immediately shows that the edges of the face are also `selected', caused by the steep gradient. However, since the edges of the face also contain some errors, this was kept the way it was.
-
-In the next step, the threshold is applied and the `spiky' patches are replaced by a constant value, which marks the gaps to be replaced by the interpolation algorithm of section \ref{sec:interpolation}. As can be observed in figure \ref{fig:disparity-flf}, though not perfect, the filter removes a reasonable portion of the errors. However, due to the nature of the algorithm (to be precise, the nature of the blurred Laplacian) the larger patches are not fixed.
-
-\subsection{Performance evaluation}
-\gray{For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.}
 
 
 \section{Results}
@@ -436,7 +399,9 @@ The effect of colour normalisation on the end result was not studied, but it was
 
 
 \section{Conclusion}
-\gray{A conclusion reviews the main points of the paper. Describe the overall implication of the results to the original problem statement (or research questions). Do not replicate the abstract as the conclusion. A conclusion might also elaborate on the importance of the work, or suggest applications.}
+A conclusion reviews the main points of the paper. Describe the overall implication of the results to the original problem statement (or research questions). Do not replicate the abstract as the conclusion. A conclusion might also elaborate on the importance of the work, or suggest applications.
+
+
 \appendices
 \section{Additional results}
 \FloatBarrier
@@ -500,6 +465,15 @@ The effect of colour normalisation on the end result was not studied, but it was
 
 \FloatBarrier
 
+\section{Guidelines for Graphs and Tables}
+\subsection{Graphs and Images}
+Below each figure (graph or image) there must be a caption with a figure number and a figure title. See Fig 1. Figure titles should be legible, approximately 8 to 10 point type. Each figure should be referenced in the text. Each axis of a graph should have a label. Use words rather than symbols. As an example, write the quantity ԗavelength,Ԡor ԗavelength $\lambda$,Ԡnot just Ӥ\lambda$.ԠPut units in parentheses. Do not label axes only with units. As in Fig. \ref{fig:example}, for example, write ԗavelength (nm),Ԡnot just Өnm).Ԡ
+
+\subsection{Tables} 
+Tables should have a table caption on top. See Table \ref{tab:example}. Tables should be numbered with Roman Numerals (I, II, III, IV, and so on). Tables should also always be referenced in the text.
+
+\subsection{Videos}
+Videos should be uploaded as separate files. The preferred video format is mp4. DonӴ make the video files unnecessarily large. 20 Mbytes is acceptable, but 200 Mbyte is not. Appendix A contains a Matlab script that you can use to resize the frame size of a video. The parameter $quality$ controls the amount of compression. Sometimes it is also useful to skip frames. For instance, only write the odd frames to the output video. 
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -514,6 +488,12 @@ The effect of colour normalisation on the end result was not studied, but it was
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
 %
+\begin{figure}[!t]
+        \centering
+        \includegraphics[width=2.5in, height=1.4in]{examples.png}
+        \caption{Examples of spectrum from different classes}
+        \label{fig:example}
+\end{figure}
 
 % Note that IEEE typically puts floats only at the top, even when this
 % results in a large percentage of a column being occupied by floats.
@@ -547,6 +527,24 @@ The effect of colour normalisation on the end result was not studied, but it was
 % \footnotesize as IEEE normally uses this smaller font for tables.
 % The \label must come after \caption as always.
 %
+\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+%\extrarowheight as needed to properly center the text within the cells
+\caption{An Example of a Table}
+\label{table_example}
+\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+\begin{tabular}{|c||c|}
+\hline
+One & Two\\
+\hline
+Three & Four\\
+\hline
+\end{tabular}\label{tab:example}
+\end{table}
 
 
 % Note that IEEE does not put floats in the very first column - or typically
@@ -555,6 +553,12 @@ The effect of colour normalisation on the end result was not studied, but it was
 % Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
 % floats. This can be corrected via the \fnbelowfloat command of the
 % stfloats package.
+
+
+
+
+
+
 
 
 
@@ -624,7 +628,7 @@ numbersep=3pt, % this defines how far the numbers are from the text
 % you can choose not to have a title for an appendix
 % if you want by leaving the argument blank
 \section{Guideline for References}
-In text, refer simply to the reference number. Do not use �Ref.� or �reference� except at the beginning of a sentence: �Reference [3] shows ... .� 
+In text, refer simply to the reference number. Do not use Ԓef.Ԡor ԲeferenceԠexcept at the beginning of a sentence: Ԓeference [3] shows ... .Ԡ
 
 
 
