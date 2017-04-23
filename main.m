@@ -12,7 +12,7 @@ addpath(genpath(PROJ_DIR));
 
     % Define subject and calibration paths
     SUBJ = 'subject1';      % Possibilities 1,2,4
-    CALIB= 'Calibratie 1/'; % Possibilities 1,2
+    CALIB= 'Calibratie 2/'; % Possibilities 1,2
     IMG  = '_2';            % Possibilties 1,2,365,729,1093,1457
 
     % Load stereo calibration 
@@ -79,15 +79,15 @@ OutpView = 'full';
                             'OutputView',OutpView);
 [im_Ml_rec, im_L_rec] = rectifyStereoImages(im_M, im_L_norm, sP_ML,...
                             'OutputView',OutpView);
-[im_Lr_rec, im_Rl_rec] = rectifyStereoImages(im_L, im_R_norm, sP_LR,...
-                            'OutputView',OutpView);
+% [im_Lr_rec, im_Rl_rec] = rectifyStereoImages(im_L, im_R_norm, sP_LR,...
+%                             'OutputView',OutpView);
 
 [mask_Mr_rec, mask_R_rec] = rectifyStereoImages(mask_M, mask_R, sP_MR,...
                             'OutputView',OutpView);
 [mask_Ml_rec, mask_L_rec] = rectifyStereoImages(mask_M, mask_L, sP_ML,...
                             'OutputView',OutpView);
-[mask_Lr_rec, mask_Rl_rec] = rectifyStereoImages(mask_L, mask_R, sP_LR,...
-                            'OutputView',OutpView);
+% [mask_Lr_rec, mask_Rl_rec] = rectifyStereoImages(mask_L, mask_R, sP_LR,...
+%                             'OutputView',OutpView);
 
                         
 masked_Mr_rec = im_Mr_rec .* uint8(repmat(mask_Mr_rec,[1,1,3]));
@@ -96,8 +96,8 @@ masked_R_rec  = im_R_rec  .* uint8(repmat(mask_R_rec,[1,1,3]));
 masked_Ml_rec = im_Ml_rec .* uint8(repmat(mask_Ml_rec,[1,1,3]));
 masked_L_rec  = im_L_rec  .* uint8(repmat(mask_L_rec,[1,1,3]));
 
-masked_Lr_rec = im_Lr_rec .* uint8(repmat(mask_Lr_rec,[1,1,3]));
-masked_Rl_rec = im_Rl_rec .* uint8(repmat(mask_Rl_rec,[1,1,3]));
+% masked_Lr_rec = im_Lr_rec .* uint8(repmat(mask_Lr_rec,[1,1,3]));
+% masked_Rl_rec = im_Rl_rec .* uint8(repmat(mask_Rl_rec,[1,1,3]));
 
 
 
@@ -106,48 +106,83 @@ figure;
         imshow(stereoAnaglyph(masked_Mr_rec, masked_R_rec));
 	CreateAxes(3,1,2);
         imshow(stereoAnaglyph(masked_Ml_rec, masked_L_rec));
-	CreateAxes(3,1,3);
-        imshow(stereoAnaglyph(masked_Lr_rec, masked_Rl_rec));
 
-        
-figure;
-    CreateAxes(2,1,1);
-        imshow(mask_Mr_rec);
-	CreateAxes(2,1,2);
-        imshow(mask_Ml_rec);
 	
 
 %% Disparity
 
-disparmap_R = mapDisparity(im_Mr_rec, im_R_rec);
-disparmap_L = mapDisparity(im_Ml_rec, im_L_rec);
-    % Cut the background out by using the binary mask
+ switch SUBJ(end);
+    case '1'
+        dispar_values_R = [ 230,  350];
+        dispar_values_L = [-550, -200];
+    case '2'
+        dispar_values_R = [ 230,  380];
+        dispar_values_L = [-580, -300];
+    case '4'
+        dispar_values_R = [ 150,  600];
+        dispar_values_L = [-560, -150];
+end
+
+disparmap_R = mapDisparity(im_R_rec, im_Mr_rec, flip(dispar_values_R).*-1) .* -1;
+disparmap_L = mapDisparity(im_Ml_rec, im_L_rec, dispar_values_L).*-1;
+
 figure;
     imshow(disparmap_R)
 figure;
     imshow(disparmap_L)
 
+%% Erode the masks to cut a bit of the image border
+
+er_fact = 30;
+
+mask_Mr_eroded = imerode(mask_Mr_rec, strel('diamond', er_fact));
+mask_R_eroded = imerode(mask_R_rec  , strel('diamond', er_fact));
+mask_Ml_eroded = imerode(mask_Ml_rec, strel('diamond', er_fact));
+    
 %% Fill Gaps with relaxation
+
 gv = -1;
 
 disparmap = disparmap_R.*mask_Mr_rec;
 disparmap(isnan(disparmap)) = 0;
 disparmap(mask_Mr_rec==1 & disparmap==0) = gv;
 disparmap_f = relaxgaps(disparmap,gv,1,300,0.001,0);
+disparmap_R(isnan(disparmap_R)) = 0;
+disparmap_L(isnan(disparmap_L)) = 0;
 
-figure; imshow(disparmap.*mask_Mr_rec,[])
-figure; imshow(disparmap_f,[])
+disparmap_R(mask_R_rec==1  & disparmap_R==0) = -1;
+disparmap_L(mask_Ml_rec==1 & disparmap_L==0) = -1;
 
-%% Laplacian filter
+disparmap_fR = relaxgaps(disparmap_R ,gv,1,300,0.001,0);
+disparmap_fL = relaxgaps(disparmap_L ,gv,1,300,0.001,0);
+
+figure; imshow(disparmap_fR,[])
+figure; imshow(disparmap_fL,[])
+
+
+%% Laplacian filter plus new relaxation
+
 threshold = 1;
 [disparmap_fl,lapfilt] = laplacianFilter(disparmap_f,threshold,gv);
 figure; imshow(disparmap_fl,[]); title('Laplacian filtered')
 [disparmap_flf,its] = relaxgaps(disparmap_fl,gv,1,400,0.001,0);
 
 figure; imshow(disparmap_flf,[]); title('Relaxed Laplacian filtered')
+disparmap_fR_lap = laplacianFilter(disparmap_fR, threshold, gv);
+figure; imshow(disparmap_fR_lap,[]); title('Laplacian filtered')
+disparmap_fR_2 = relaxgaps(disparmap_fR_lap,gv,1,300,0.001,0);
+figure; imshow(disparmap_fR_2,[]); title('Relaxed Laplacian filtered')
+
+
+disparmap_fL_lap = laplacianFilter(disparmap_fL, threshold, gv);
+figure; imshow(disparmap_fL_lap,[]); title('Laplacian filtered')
+disparmap_fL_2 = relaxgaps(disparmap_fL_lap, gv,1,300,0.001,0);
+figure; imshow(disparmap_fL_2,[]); title('Relaxed Laplacian filtered')
+
 
 %% Plot Face Mesh
-facemesh(disparmap_flf,im_Mr_rec)
+ptCloud_R = facemesh(disparmap_fR_2.*mask_R_eroded, im_R_rec );
+ptCloud_L = facemesh(disparmap_fL_2.*mask_Ml_eroded, im_Ml_rec);
 
 
 %% Write Report Images
@@ -173,3 +208,37 @@ if writeReportImages
     imwrite(disparityflf_c, './out/disparity-flf.png')
 end
 
+%% Point cloud figure creation
+ptCloud_R_ds = pcdownsample(ptCloud_R, 'random',.2);
+ptCloud_L_ds = pcdownsample(ptCloud_L, 'random',.2);
+
+pts_R.Location = ptCloud_R_ds.Location;
+pts_L.Location = ptCloud_L_ds.Location;
+
+pts_R.Color    = ptCloud_R_ds.Color;
+pts_L.Color    = ptCloud_L_ds.Color;
+
+include_R      = pts_R.Location(:,3) > 1000 & pts_R.Location(:,3) < 1400; 
+include_L      = pts_L.Location(:,3) > 1000 & pts_L.Location(:,3) < 1400;
+
+ptCloud_R_include = pointCloud(pts_R.Location(include_R,:),...
+                        'Color',pts_R.Color(include_R,:));
+ptCloud_L_include = pointCloud(pts_L.Location(include_L,:),...
+                        'Color',pts_L.Color(include_L,:));
+
+[tform,movingReg] = pcregrigid(ptCloud_L_include, ptCloud_R_include, 'Extrapolate', true);
+
+
+
+%%
+figure; 
+    CreateAxes(2,2,1); axis off
+pcshow(ptCloud_R_include);
+    CreateAxes(2,2,2); axis off
+pcshow(ptCloud_L_include);
+    CreateAxes(2,2,3); axis off
+pcshow(ptCloud_L); hold on;
+pcshow(ptCloud_R)
+    CreateAxes(2,2,4); axis off
+pcshow(ptCloud_R_include); hold on;
+pcshow(  movingReg );

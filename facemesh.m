@@ -1,4 +1,4 @@
-function facemesh(disparmap,rgbmap)
+function ptCloud = facemesh(disparmap,rgbmap)
 
 [W,H] = size(disparmap);
 [X,Y] = meshgrid(1:H,1:W);
@@ -15,3 +15,5 @@ figure
 ptCloud = pointCloud(xyzPoints,'Color',rgbPoints);
 pcshow(ptCloud);
 camproj('perspective')
+
+end

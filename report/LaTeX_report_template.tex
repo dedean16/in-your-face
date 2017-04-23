@@ -249,7 +249,7 @@ The method itself has been implemented in four simple steps, also illustrated in
 First, the colour image is converted to gray scale in order to facilitate subsequent steps.
 Then the intensity gradients in the image are detected using Canny method.
 Because of the nature of bust images, there are very few edges arising from the background, and numerous ones from the bust itself.
-However, there are multiple breaks in the bust outline, as the skin tone and intensity matches that of the background. 
+However, there are multiple breaks in the bust outline, as the skin tone and intensity occasionally match that of the background. 
 Thus a morphological closing is required in order to connect the outline of the bust before finally morphologically filling the image.
 
 
@@ -297,7 +297,7 @@ The rectified images have each row of pixels corresponding each other, making th
 \subsection{Disparity}
 
 For the rectified images each world point lies on the same row, but at the different column. 
-The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between -640 and 480.  %%% refer to disparity function in appendix?
+The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between -640 and 480, as the majority of bust-specific values were determined to lie within these boundaries.  %%% refer to disparity function in appendix?
 
 The disparity was computed separately for each colour channel. If the disparity for a certain pixel is unresolved, it returns a 0. The final disparity value for each pixel was calculated as the mean of successfully determined values. Though this method slightly increases the number of matched pixels, this does mean there will still be `gaps' in the disparity map for all the parts that are fully unresolved. These can be observed in figure \ref{fig:disparity-rgb}. In the next step, these gaps are filled with sensible values using an interpolation algorithm.
 
@@ -325,23 +325,9 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
         \centering
         \includegraphics[width=\linewidth]{Pics/disparity-fill.png}
         \caption{Disparity gaps are filled using iterative relaxation.}
-        \label{fig:disparity-fill}
+        \label{fig:disparity-filled}
     \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Pics/disparity-lapf.png}
-        \caption{Disparity map contains errors which generally show up as `spiky' patches. Laplacian filter detects these patches.}
-        \label{fig:disparity-lapf}
-    \end{subfigure}
-    ~
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[width=\linewidth]{Pics/disparity-flf.png}
-        \caption{By means of a threshold, the spiky areas are removed and filled with the relaxation function.}
-        \label{fig:disparity-flf}
-    \end{subfigure}
-    \caption{Disparity gaps interpolation and filtering.}
+    \caption{Disparity gaps interpolation.}
     \label{fig:disparity-fillgap}
 \end{figure}
 
@@ -351,7 +337,7 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
 An example result for reconstruction is presented in figure \ref{fig:results-reconstruction}, and additional results in the Appendix.
 As can be seen from the images, the depth of different features was mapped successfully for the most parts.
 Especially the areas with higher amounts of texture, such as hair, eyes, mouth and part of the shirt were reconstructed very well. 
-Accordingly, the algorithm struggled in regions with only little texture, such as forehead and neck, as can be seen from figure \ref{fig:disparity-gaps}.
+Accordingly, the algorithm struggled in regions with only little texture, such as forehead and neck, as can be seen from figure \ref{fig:disparity-rgb}.
 
 
 \begin{figure}
@@ -384,13 +370,13 @@ This is especially apparent in case of subject 3 in figure \ref{fig:results_S3-r
 
 The results could be further improved by combining the left and right meshes to yield a more complete view of the face. 
 This could also be used to further average out some of the spiking in the center region of the face.
-In this case the combining of two surfaces was unsuccessful, and Matlab's \textit{pcregrigid}-algorithm only yielded a partial overlay, as depicted in figure \ref{fig:combined-faces}.
-A better result could be obtained e.g. by first determining a rough estimation of correct location manually, and then trying to match them algorithmically.
-The fitting could've been or by fitting both of them on top of a face archetype.
+In this case the combining of two surfaces was unsuccessful, and Matlab's \textit{pcregrigid}-function only yielded a partial overlay, as depicted in figure \ref{fig:combined-faces}.
+A better result could be obtained e.g. by first determining a rough estimation of correct location manually, and then trying to match them with an iterative closest point method.
+Another possibility would be to fit both surfaces on top of a face archetype, and once the crude characteristics are in place, try to e.g. average the non-matching parts.
 
 Removal of the background from the image by masking proved to be an efficient approach. 
 Alternatively, the unwanted background could be sought to be removed by discriminating on the basis of the disparity. 
-The effect of image normalization was not studied.
+The effect of colour normalisation on the end result was not studied, but it was most likely relatively minor, as the differences between images were not that pronounced.
 
 
 \section{Conclusion}
@@ -398,8 +384,17 @@ A conclusion reviews the main points of the paper. Describe the overall implicat
 
 
 \appendices
-\section{Results for other subjects}
+\section{Additional results}
 \FloatBarrier
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{result_S1_356}
+	\captionof{figure}{Reconstruction results for subject 1 with a different facial expression. Right view.}
+	\label{fig:result_S1_356}
+\end{figure}
+
 
 \begin{figure}
     \centering
@@ -440,14 +435,6 @@ A conclusion reviews the main points of the paper. Describe the overall implicat
 	\label{fig:results_S3-reconstruction}
 \end{figure}
 
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{result_S1_356}
-	\captionof{figure}{Reconstruction results for subject 1 with a different facial expression. Right view.}
-	\label{fig:result_S1_356}
-\end{figure}
 
 
 \begin{figure}
@@ -613,10 +600,6 @@ numbersep=3pt, % this defines how far the numbers are from the text
 \label{sec:relaxgaps}
 \lstinputlisting[language=Matlab]{../relaxgaps.m}
 
-\subsection{laplacianFilter}
-\label{sec:laplacianFilter}
-\lstinputlisting[language=Matlab]{../laplacianFilter.m}
-
 \subsection{facemesh}
 \label{sec:facemesh}
 \lstinputlisting[language=Matlab]{../facemesh.m}
@@ -661,11 +644,13 @@ In text, refer simply to the reference number. Do not use “Ref.” or “reference” 
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
+\begin{thebibliography}{9}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+\bibitem{3D_Peng}
+Peng, Weilong, Chao Xu, and Zhiyong Feng. "3D face modeling based on structure optimization and surface reconstruction with B-Spline." Neurocomputing 179 (2016): 228-237.
+
+\bibitem{Creation_Krutikova}
+Krutikova, Olga, Aleksandrs Sisojevs, and Mihails Kovalovs. "Creation of a Depth Map from Stereo Images of Faces for 3D Model Reconstruction." Procedia Computer Science 104 (2017): 452-459.
 
 \end{thebibliography}
 

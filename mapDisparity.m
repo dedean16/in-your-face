@@ -1,4 +1,4 @@
-function disparmap = mapDisparity(im1, im2)
+function disparmap = mapDisparity(im1, im2, dispar_values)
 % Calculate the disparity map between two RGB images
 % Disparity is calculated for each color separately
 visualise = true;
@@ -9,12 +9,12 @@ for rgb = 1:3                               % Loop over RGB index (1, 2 or 3)
     img2 = im2(:,:,rgb);
 
     % Calculate disparity map
-    disparRange = [0 640];
+    disparRange = [-640 480];
     disparmap_rgb(:,:,rgb) = disparity(img1, img2,...
         'BlockSize', 5, 'DisparityRange', disparRange);
     
     % Assume: face values are in predefined range
-    disparmap_rgb(disparmap_rgb<150 | disparmap_rgb>450) = 0;       % remove other stuff
+    disparmap_rgb(disparmap_rgb<dispar_values(1) | disparmap_rgb>dispar_values(2)) = 0;       % remove other stuff
 end
 
 %% Combine color channels into one image: mean of nonzero values
