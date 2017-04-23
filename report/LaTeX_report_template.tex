@@ -323,11 +323,25 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
     ~
     \begin{subfigure}[t]{0.45\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{Pics/disparity-filled.png}
+        \includegraphics[width=\linewidth]{Pics/disparity-fill.png}
         \caption{Disparity gaps are filled using iterative relaxation.}
-        \label{fig:disparity-filled}
+        \label{fig:disparity-fill}
     \end{subfigure}
-    \caption{Disparity gaps interpolation.}
+    ~
+    \begin{subfigure}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Pics/disparity-lapf.png}
+        \caption{Disparity map contains errors which generally show up as `spiky' patches. Laplacian filter detects these patches.}
+        \label{fig:disparity-lapf}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{Pics/disparity-flf.png}
+        \caption{By means of a threshold, the spiky areas are removed and filled with the relaxation function.}
+        \label{fig:disparity-flf}
+    \end{subfigure}
+    \caption{Disparity gaps interpolation and filtering.}
     \label{fig:disparity-fillgap}
 \end{figure}
 
@@ -598,6 +612,10 @@ numbersep=3pt, % this defines how far the numbers are from the text
 \subsection{relaxgaps}
 \label{sec:relaxgaps}
 \lstinputlisting[language=Matlab]{../relaxgaps.m}
+
+\subsection{laplacianFilter}
+\label{sec:laplacianFilter}
+\lstinputlisting[language=Matlab]{../laplacianFilter.m}
 
 \subsection{facemesh}
 \label{sec:facemesh}
