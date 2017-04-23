@@ -1,10 +1,18 @@
 function [im_noBG, mask] = removeBackground(im, edgeThresh, strelVal, plotFlag)
 %% function [im_BG] = removeBackground(im, thresh, strel)
-%   Hint here
+%   Removes the background of an image and returns that plus a binary mask
+%   of foreground.
+%   Converts the image to grayscale, performs Canny edge detection,
+%   morphological closing and image filling.
+%   INPUT:
+%       im          - The colour image to be masked
+%       edgeThresh  - Thesholding value for Canny edge detection (0<x<1)
+%       strelVal    - Strel thickness for closing
+%       plotFlag    - Binary flag for plotting
+%   OUTPUT:
+%       im_noBG     - Colour image where background pixels are 0
+%       mask        - Binary mask where foreground pixels are 1
    
-    % These have proven redundant
-%     im = imresize(im, 0.25);
-%     im = imgaussfilt(im, 2);
 
     % Convert to grayscale
 im_g = rgb2gray(im);

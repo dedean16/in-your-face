@@ -276,7 +276,7 @@ Thus a morphological closing is required in order to connect the outline of the 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.46\textwidth]{BGRemoval.png}
+\includegraphics[width=\linewidth]{BGRemoval.png}
 \caption{Steps of background detection algorithm:\\
 \textbf{(a)} The gray scale bust image\\
 \textbf{(b)} Edge detection\\
@@ -357,12 +357,62 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
 
 \subsubsection{Performance evaluation}
 For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.
+
+
 \section{Results}
+
+The results for reconstruction are presented in Figures \ref{fig:result_S1}--\ref{fig:result_S3}, and as can be seen, the depth of different features was mapped successfully for most parts.
+Especially the areas with higher amounts of texture, such as hair, eyes, mouth and part of the shirt were reconstructed very well. 
+Accordingly, the algorithm struggled in regions with only little texture, such as forehead and neck, as can be seen from figure \ref{fig:disparity-gaps}.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{result_S1_R}
+		\caption{}
+		\label{fig:result_S1}
+    \end{subfigure}
+    
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+		\includegraphics[width=\linewidth]{result_S1_L}
+		\caption{}
+		\label{fig:result_S2}
+    \end{subfigure}
+    
+    \caption{Reconstruction results for subject 1 from left \textbf{(a)} and right \textbf{(b)} views.}
+    \label{fig:results-reconstruction}
+
+\end{figure}
+
+The inter-subject variation of the results was considerable. The main factor was the amount of detail in the area: the subjects' hair, clothes, and the areas around mouth and eyes were properly reconstructed in virtually all subjects. 
+On the contrary, the more there were featureless regions, such as smooth skin or solid colour clothing. This is especially visible in subject 3 in figure \ref{fig:result_S3}.
+
 Here, you give the results of what is described in Section II: tables, images and/or graphs. The accompanying text of these tables, images and/or graphs clarifies how they are related to the methods described in Section II.
  
 If you have any remarkable observations, mention and describe them here, but without an interpretation, explanation, or meaning.
 Do not introduce new methods in this section. And do not give an interpretation or a judgement of these results.
+
+
 \section{Discussion}
+
+The results could be further improved by combining the left and right meshes to yield a more complete view of the face. 
+However, in this case since the reconstruction of the left side was slanted and of very poor quality, this would've only made the outcome worse.
+But had the outcome been different, the images could've been combined e.g. by means of iterative closest point matching, or by fitting both of them on top of a face archetype.
+
+The most probable explanation for the poor performance on the left side images is that there was something wrong with the disparity computation...
+It's also possible, that the problems were caused by the viewing angle, and  rectification of the disparity map before proceeding would've yielded better results.
+
+Removal of the background from the image by masking proved to be an efficient approach. 
+Alternatively, the unwanted background could be sought to be removed by discriminating on the basis of the disparity. 
+The effect of image normalization was not studied.
+
+The number of calibration images used was also found to affect the results.
+While the main results were acquired using twenty calibration images per camera, the result by using only ten is presented Appendix in figure \ref{fig:result_10calibPics}.
+The slight
+
 Give an interpretation and judgement of the results. If you had any remarkable observations, discuss them here to give them meaning (interpretation, explanation, implication).
 
 Describe limitations of the study.

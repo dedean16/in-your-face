@@ -1,6 +1,9 @@
 function [im_out] = normalizeImages(im_norm, im_ref)
-%% A function for intensity corrections of two images
-%   Hint here
+%% function normalizeImages(im_norm, im_ref)
+%   Normalises the mean and variance of im_norm to correspond those of
+%   im_ref.
+%   INPUT:  Two colour images im_norm and im_ref
+%   OUTPUT: im_out; im_norm with normalised mean and var
 
 
 %% Break the image to each colour component
