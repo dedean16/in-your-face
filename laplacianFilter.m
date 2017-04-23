@@ -1,4 +1,4 @@
-function dfilt = laplacianFilter(dmap,threshold,gv)
+function [dfilt,glapl] = laplacianFilter(dmap,threshold,gv)
 % === Laplacian Filter for disparity maps ===
 % Computes a gaussian blurred absolute laplacian.
 % Replaces values that are above given threshold.
@@ -13,6 +13,7 @@ function dfilt = laplacianFilter(dmap,threshold,gv)
 %
 % Output:
 %  - dfilt:     Filtered disparity map.
+%  - glapl:     Laplacian filtering image.
 
 % Settings
 s = 7;

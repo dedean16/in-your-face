@@ -130,20 +130,46 @@ figure;
 %% Fill Gaps with relaxation
 gv = -1;
 
-disparmap = disparmap_R;
+disparmap = disparmap_R.*mask_Mr_rec;
 disparmap(isnan(disparmap)) = 0;
 disparmap(mask_Mr_rec==1 & disparmap==0) = gv;
-disparmap_f = relaxgaps(disparmap.*mask_Mr_rec,gv,1,300,0.001,0);
+disparmap_f = relaxgaps(disparmap,gv,1,300,0.001,0);
 
 figure; imshow(disparmap.*mask_Mr_rec,[])
 figure; imshow(disparmap_f,[])
 
 %% Laplacian filter
 threshold = 1;
-disparmap_fl = laplacianFilter(disparmap_f,threshold,gv);
+[disparmap_fl,lapfilt] = laplacianFilter(disparmap_f,threshold,gv);
 figure; imshow(disparmap_fl,[]); title('Laplacian filtered')
-disparmap_flf = relaxgaps(disparmap_fl,gv,1,300,0.001,0);
+[disparmap_flf,its] = relaxgaps(disparmap_fl,gv,1,400,0.001,0);
+
 figure; imshow(disparmap_flf,[]); title('Relaxed Laplacian filtered')
 
 %% Plot Face Mesh
 facemesh(disparmap_flf,im_Mr_rec)
+
+
+%% Write Report Images
+writeReportImages = true;
+
+if writeReportImages
+    % Crop parameters
+    x = 800;
+    y = 100;
+    w = 600;
+    h = 700;
+    
+    % Crop images and adjust range for export
+    disparitygaps_c = mat2gray(imcrop(disparmap,    [x y w h]));
+    disparityfill_c = mat2gray(imcrop(disparmap_f,  [x y w h]));
+    disparitylapf_c = mat2gray(imcrop(lapfilt,      [x y w h]));
+    disparityflf_c  = mat2gray(imcrop(disparmap_flf,[x y w h]));
+    
+    % Write images
+    imwrite(disparitygaps_c,'./out/disparity-gaps.png')
+    imwrite(disparityfill_c,'./out/disparity-fill.png')
+    imwrite(disparitylapf_c,'./out/disparity-lapf.png')
+    imwrite(disparityflf_c, './out/disparity-flf.png')
+end
+
