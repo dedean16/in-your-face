@@ -159,6 +159,7 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 \usepackage{hyperref}
+\usepackage{placeins}
 
 \begin{document}
 
@@ -194,18 +195,10 @@ In this project three stereoscopic photographs are combined to form a three-dime
 For this purpose the camera parameters are defined, stereo images rectified, and a disparity map is computed.
 Additionally, a background removal is implemented, as well as a relaxation method for interpolation of regions where reconstruction failed.
 
-\textit{Add a short abstract here containing at most 100 words. Abstracts do not contain symbols, special characters, math, or references. Describe the context shortly, and summarize the research question and the main items from the discussion.}
 \end{abstract}
-% IEEEtran.cls defaults to using nonbold math in the Abstract.
-% This preserves the distinction between vectors and scalars. However,
-% if the journal you are submitting to favors bold math in the abstract,
-% then you can use LaTeX's standard command \boldmath at the very start
-% of the abstract to achieve this. Many IEEE journals frown on math
-% in the abstract anyway.
 
-% Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-four key words in alphabetical order, separated by commas.
+Facial reconstruction, Image Processing, 3D computer vision.
 \end{IEEEkeywords}
 
 
@@ -237,36 +230,22 @@ For this stereo calibrations of the cameras and image rectifications are perform
 From the disparity maps depth images are reconstructed, and those are then converted to surface meshes, which are finally combined to yield the 3D mesh of the full bust.
 
 
-introduction contains (1) a background, (2) the definition of the problem that is addressed possibly with a research question and subquestions, (3) a short outline of the report.
-
-Note 1: the problem is \textbf{not} how to create a Matlab function. The definition of the problem should be at a much higher level of abstraction.
-
-Note 2: The introduction should be readable for a less technically skilled audience, e.g. a clinician, or a manager. Therefore, the introduction does not contain symbols, special characters, or math. 
-
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
-\section{Methods and Materials}
-
-\subsection{Materials}
+\section{Materials}
 A set of twenty calibration images was used to perform the stereo camera calibration. 
 The images were taken simultaneously from three sides with a calibration checkerboard (10mm squares) in view.
 Accordingly, the subjects consisted of three persons, imaged with the three-camera system so, that one image was taken straight from the middle, one from the left and one from the right. 
 In total five images of each subject were taken, each with a different facial expression.
 
 
-\subsection{Methods}
-\subsubsection{Analysis}
-Start with defining the overview of the problem in a more mathematical context. What is the input? What is the desired output? (Introduce mathematical symbols for the input and output variables). What is in rough steps the strategy to get the output from the input?
- 
-Next, define the subtasks in more detail. For each subtask, introduce variables whenever needed, and set-up the mathematical relations (equations) between these variables, possibly combined with pseudo code.  Do \textbf{no}t use Matlab code. Describe your algorithm such that the principle of operation becomes clear. For that, use ‘mathematical style’ pseudo code. See: \href{https://en.wikipedia.org/wiki/Pseudocode\#https://en.wikipedia.org/wiki/Pseudocode}{https://en.wikipedia.org/wiki/Pseudocode} and pseudo-code examples provided in \href{https://en.wikipedia.org/wiki/Category:Articles_with_example_pseudocode\#https://en.wikipedia.org/wiki/Category:Articles_with_example_pseudocode}{https://en.wikipedia.org/wiki/Category:Articles\_with\_example \_pseudocode}. The only place in the report that contains Matlab code is the appendix (you should add your listing as an annex).
+\section{Methods}
 
-\subsubsection{Background Detection}
+\subsection{Background Detection}
 A large part of the images consists uniformly coloured background.
 Because the tone of the background is very similar to skin colour, colour-based segmentation methods yield easily incorrect results. 
 However, since the background is fairly smooth, whereas the foreground with person is more heavily textured. 
 Because of this an edge-based segmentation is a logical choice for background removal.
 
-The method itself has been implemented in four simple steps, also illustrated in \autoref{fig:backgroundRemoval}.
+The method itself has been implemented in four simple steps, also illustrated in figure ref{fig:backgroundRemoval}.
 First, the colour image is converted to gray scale in order to facilitate subsequent steps.
 Then the intensity gradients in the image are detected using Canny method.
 Because of the nature of bust images, there are very few edges arising from the background, and numerous ones from the bust itself.
@@ -287,7 +266,7 @@ Thus a morphological closing is required in order to connect the outline of the 
 \end{figure}
 
 
-\subsubsection{Image normalisation}
+\subsection{Image normalisation}
 
 The bust stereo images have slightly different lighting effects for each angle, which may cause instability later on.
 For this purpose both left and right stereo images were normalized to correspond the middle one in regards to the mean and variance of their intensities.
@@ -302,38 +281,36 @@ K_{x} &= J_{x} \times \dfrac{\texttt{mean}(I_{mid})}{\texttt{mean}(J_x)},
 \noindent where I, J and K are the non-normalised, variance normalised, mean normalised images, respectively.
 
 
-\subsubsection{Stereo calibration}
+\subsection{Stereo calibration}
 
 The three-camera system was calibrated using the calibration image set explained in the section \textit{Materials}. 
 The calibration was done in pairs, pairing up the middle image with both left and right images.
 A three-coefficient stereo calibration was performed using Matlab's \textit{Stereo Camera Calibrator}.
 
 
-\subsubsection{Rectification}
+\subsection{Rectification}
 
 The image pairs were rectified (i.e. projected onto a common image plane) by using Matlab's \textit{rectifyStereoImages}-function with the determined stereo calibration parameters.
 The rectified images have each row of pixels corresponding each other, making the calculation of disparity simpler.
 
 
-\subsubsection{Disparity}
+\subsection{Disparity}
 
 For the rectified images each world point lies on the same row, but at the different column. 
-The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range of 0 and 640. %%% refer to disparity function in appendix?
+The distance between the two columns, or the disparity, was computed using Matlab's \textit{disparity}-function with block size of 5 and disparity range between -640 and 480.  %%% refer to disparity function in appendix?
 
 The disparity was computed separately for each colour channel. If the disparity for a certain pixel is unresolved, it returns a 0. The final disparity value for each pixel was calculated as the mean of successfully determined values. Though this method slightly increases the number of matched pixels, this does mean there will still be `gaps' in the disparity map for all the parts that are fully unresolved. These can be observed in figure \ref{fig:disparity-rgb}. In the next step, these gaps are filled with sensible values using an interpolation algorithm.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\linewidth]{Pics/disparity-RGB.png}
-    \caption{Disparity map for the RGB channels. For the colored pixels, only one or two channels have a disparity match. For the grey or white pixels, all channels are resolved. Black represents fully unresolved pixels.}
+    \caption{Disparity map for the RGB channels. For the coloured pixels, only one or two channels have a disparity match. For the grey or white pixels, all channels are resolved. Black represents fully unresolved pixels.}
     \label{fig:disparity-rgb}
 \end{figure}
 
-% If only one colour channel yields a result and the two others fail, the result is discarded altogether and the disparity is acquired by means of interpolation. ----> This is no longer used, as it didn't seem to be an effective way of removing errors.
 
-
-\subsubsection{Interpolation}
-The interpolation algorithm fills in gaps of an input image using iterative relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value.
+\subsection{Interpolation}
+The interpolation algorithm fills in gaps of an input image using iterative relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, on every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value.
 
 \begin{figure}[h]
     \centering
@@ -355,13 +332,10 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
 \end{figure}
 
 
-\subsubsection{Performance evaluation}
-For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.
-
-
 \section{Results}
 
-The results for reconstruction are presented in Figures \ref{fig:result_S1}--\ref{fig:result_S3}, and as can be seen, the depth of different features was mapped successfully for most parts.
+An example result for reconstruction is presented in figure \ref{fig:results-reconstruction}, and additional results in the Appendix.
+As can be seen from the images, the depth of different features was mapped successfully for the most parts.
 Especially the areas with higher amounts of texture, such as hair, eyes, mouth and part of the shirt were reconstructed very well. 
 Accordingly, the algorithm struggled in regions with only little texture, such as forehead and neck, as can be seen from figure \ref{fig:disparity-gaps}.
 
@@ -372,14 +346,14 @@ Accordingly, the algorithm struggled in regions with only little texture, such a
         \centering
         \includegraphics[width=\linewidth]{result_S1_R}
 		\caption{}
-		\label{fig:result_S1}
+		\label{fig:result_S1_R}
     \end{subfigure}
     
     \begin{subfigure}[t]{\linewidth}
         \centering
 		\includegraphics[width=\linewidth]{result_S1_L}
 		\caption{}
-		\label{fig:result_S2}
+		\label{fig:result_S1_L}
     \end{subfigure}
     
     \caption{Reconstruction results for subject 1 from left \textbf{(a)} and right \textbf{(b)} views.}
@@ -388,51 +362,88 @@ Accordingly, the algorithm struggled in regions with only little texture, such a
 \end{figure}
 
 The inter-subject variation of the results was considerable. The main factor was the amount of detail in the area: the subjects' hair, clothes, and the areas around mouth and eyes were properly reconstructed in virtually all subjects. 
-On the contrary, the more there were featureless regions, such as smooth skin or solid colour clothing. This is especially visible in subject 3 in figure \ref{fig:result_S3}.
-
-Here, you give the results of what is described in Section II: tables, images and/or graphs. The accompanying text of these tables, images and/or graphs clarifies how they are related to the methods described in Section II.
- 
-If you have any remarkable observations, mention and describe them here, but without an interpretation, explanation, or meaning.
-Do not introduce new methods in this section. And do not give an interpretation or a judgement of these results.
+On the contrary, the more there were featureless regions, such as smooth skin or solid colour clothing, the worse the algorithm fared. 
+This is especially apparent in case of subject 3 in figure \ref{fig:results_S3-reconstruction}.
 
 
 \section{Discussion}
 
 The results could be further improved by combining the left and right meshes to yield a more complete view of the face. 
-However, in this case since the reconstruction of the left side was slanted and of very poor quality, this would've only made the outcome worse.
-But had the outcome been different, the images could've been combined e.g. by means of iterative closest point matching, or by fitting both of them on top of a face archetype.
-
-The most probable explanation for the poor performance on the left side images is that there was something wrong with the disparity computation...
-It's also possible, that the problems were caused by the viewing angle, and  rectification of the disparity map before proceeding would've yielded better results.
+This could also be used to further average out some of the spiking in the center region of the face.
+In this case the combining of two surfaces was unsuccessful, and Matlab's \textit{pcregrigid}-algorithm only yielded a partial overlay, as depicted in figure \ref{fig:combined-faces}.
+A better result could be obtained e.g. by first determining a rough estimation of correct location manually, and then trying to match them algorithmically.
+The fitting could've been or by fitting both of them on top of a face archetype.
 
 Removal of the background from the image by masking proved to be an efficient approach. 
 Alternatively, the unwanted background could be sought to be removed by discriminating on the basis of the disparity. 
 The effect of image normalization was not studied.
 
-The number of calibration images used was also found to affect the results.
-While the main results were acquired using twenty calibration images per camera, the result by using only ten is presented Appendix in figure \ref{fig:result_10calibPics}.
-The slight
-
-Give an interpretation and judgement of the results. If you had any remarkable observations, discuss them here to give them meaning (interpretation, explanation, implication).
-
-Describe limitations of the study.
-If applicable, compare your results with results from literature.
-If applicable, provide recommendations for further work.
 
 \section{Conclusion}
 A conclusion reviews the main points of the paper. Describe the overall implication of the results to the original problem statement (or research questions). Do not replicate the abstract as the conclusion. A conclusion might also elaborate on the importance of the work, or suggest applications.
+
+
 \appendices
-\section{Guidelines for formatting Math}
-If you are using Word, use either the Microsoft Equation Editor or the MathType add-on (\href{http://www.mathtype.com\#http://www.mathtype.com}{http://www.mathtype.com}) for equations in your paper. 
+\section{Results for other subjects}
+\FloatBarrier
 
-Number equations consecutively with equation numbers in parentheses flush with the right margin, as in (\ref{eq:fourier}). Punctuate equations when they are part of a sentence, as in
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{result_S2_R}
+		\caption{}
+		\label{fig:result_S2_R}
+    \end{subfigure}
+    
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+		\includegraphics[width=\linewidth]{result_S2_L}
+		\caption{}
+		\label{fig:result_S2_L}
+    \end{subfigure}
+    \caption{Reconstruction results for subject 2 from left \textbf{(a)} and right \textbf{(b)} views.}
+    \label{fig:results_S2-reconstruction}
+\end{figure}
 
-\begin{equation} \label{eq:fourier}
-f_n=\sum_{m=0}^{N-1}{F_mexp(2\pi \mathbf{j}\frac{ nm}{N}).}
-\end{equation}
 
-Be sure that the symbols in your equation have been defined before the equation appears or immediately following. Italicize symbols ($T$ might refer to temperature, but T is the unit tesla). Refer to “(1),” not “eq. (1)” or “equation (1),” except at the beginning of a sentence: “Equation (1) is ... .”
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{result_S4_R}
+		\caption{}
+		\label{fig:result_S3_R}
+    \end{subfigure}
+    
+    \begin{subfigure}[t]{\linewidth}
+        \centering
+		\includegraphics[width=\linewidth]{result_S4_L}
+		\caption{}
+		\label{fig:result_S3_L}
+    \end{subfigure}    
+	\caption{Reconstruction results for subject 3 from left \textbf{(a)} and right \textbf{(b)} views.}
+	\label{fig:results_S3-reconstruction}
+\end{figure}
 
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{result_S1_356}
+	\captionof{figure}{Reconstruction results for subject 1 with a different facial expression. Right view.}
+	\label{fig:result_S1_356}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth]{combined-faces}
+\caption{The attempt to combine reconstructions of subject 1.}
+\label{fig:combined-faces}
+\end{figure}
+
+\FloatBarrier
 
 \section{Guidelines for Graphs and Tables}
 \subsection{Graphs and Images}
