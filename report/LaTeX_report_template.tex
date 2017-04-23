@@ -482,15 +482,6 @@ The effect of colour normalisation on the end result was not studied, but it was
 
 \FloatBarrier
 
-\section{Guidelines for Graphs and Tables}
-\subsection{Graphs and Images}
-Below each figure (graph or image) there must be a caption with a figure number and a figure title. See Fig 1. Figure titles should be legible, approximately 8 to 10 point type. Each figure should be referenced in the text. Each axis of a graph should have a label. Use words rather than symbols. As an example, write the quantity �Wavelength,� or �Wavelength $\lambda$,� not just �$\lambda$.� Put units in parentheses. Do not label axes only with units. As in Fig. \ref{fig:example}, for example, write �Wavelength (nm),� not just �(nm).� 
-
-\subsection{Tables} 
-Tables should have a table caption on top. See Table \ref{tab:example}. Tables should be numbered with Roman Numerals (I, II, III, IV, and so on). Tables should also always be referenced in the text.
-
-\subsection{Videos}
-Videos should be uploaded as separate files. The preferred video format is mp4. Don�t make the video files unnecessarily large. 20 Mbytes is acceptable, but 200 Mbyte is not. Appendix A contains a Matlab script that you can use to resize the frame size of a video. The parameter $quality$ controls the amount of compression. Sometimes it is also useful to skip frames. For instance, only write the odd frames to the output video. 
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -505,12 +496,6 @@ Videos should be uploaded as separate files. The preferred video format is mp4. 
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
 %
-\begin{figure}[!t]
-        \centering
-        \includegraphics[width=2.5in, height=1.4in]{examples.png}
-        \caption{Examples of spectrum from different classes}
-        \label{fig:example}
-\end{figure}
 
 % Note that IEEE typically puts floats only at the top, even when this
 % results in a large percentage of a column being occupied by floats.
@@ -544,24 +529,6 @@ Videos should be uploaded as separate files. The preferred video format is mp4. 
 % \footnotesize as IEEE normally uses this smaller font for tables.
 % The \label must come after \caption as always.
 %
-\begin{table}[!t]
-%% increase table row spacing, adjust to taste
-\renewcommand{\arraystretch}{1.3}
-% if using array.sty, it might be a good idea to tweak the value of
-%\extrarowheight as needed to properly center the text within the cells
-\caption{An Example of a Table}
-\label{table_example}
-\centering
-%% Some packages, such as MDW tools, offer better commands for making tables
-%% than the plain LaTeX2e tabular which is used here.
-\begin{tabular}{|c||c|}
-\hline
-One & Two\\
-\hline
-Three & Four\\
-\hline
-\end{tabular}\label{tab:example}
-\end{table}
 
 
 % Note that IEEE does not put floats in the very first column - or typically
@@ -586,7 +553,7 @@ Three & Four\\
 % \subsection or using \label (\appendices by itself
 % starts a section numbered zero.)
 %
-}
+
 
 
 \section{Matlab scripts}
