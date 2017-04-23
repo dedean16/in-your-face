@@ -280,15 +280,15 @@ Thus a morphological closing is required in order to connect the outline of the 
 
 
 \begin{figure}
-\centering
-\includegraphics[width=\linewidth]{BGRemoval.png}
-\caption{Steps of background detection algorithm:\\
-\textbf{(a)} The gray scale bust image\\
-\textbf{(b)} Edge detection\\
-\textbf{(c)} Morphological closing\\
-\textbf{(d)} Hole filling
-}
-\label{fig:backgroundRemoval}
+    \centering
+    \includegraphics[width=\linewidth]{BGRemoval.png}
+    \caption{Steps of background detection algorithm:\\
+        \textbf{(a)} The gray scale bust image\\
+        \textbf{(b)} Edge detection\\
+        \textbf{(c)} Morphological closing\\
+        \textbf{(d)} Hole filling
+    }
+    \label{fig:backgroundRemoval}
 \end{figure}
 
 
@@ -327,7 +327,7 @@ The distance between the two columns, or the disparity, was computed using Matla
 
 The disparity was computed separately for each colour channel. If the disparity for a certain pixel is unresolved, it returns a 0. The final disparity value for each pixel was calculated as the mean of successfully determined values. Though this method slightly increases the number of matched pixels, this does mean there will still be `gaps' in the disparity map for all the parts that are fully unresolved. These can be observed in figure \ref{fig:disparity-rgb}. In the next step, these gaps are filled with sensible values using an interpolation algorithm.
 
-\begin{figure}[h]
+\begin{figure}[t]
     \centering
     \includegraphics[width=0.6\linewidth]{Pics/disparity-RGB.png}
     \caption{Disparity map for the RGB channels. For the colored pixels, only one or two channels have a disparity match. For the grey or white pixels, all channels are resolved. Black represents fully unresolved pixels.}
@@ -338,7 +338,8 @@ The disparity was computed separately for each colour channel. If the disparity 
 
 
 \subsection{Interpolation}
-The interpolation algorithm fills in gaps of an input image using iterative relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value.
+\label{sec:interpolation}
+The interpolation algorithm fills in gaps of an input image using iterative relaxation. It computes sensible values for which the Laplacian is minimized, by setting each pixel to the average of the surrounding values. `Known' values will be used as boundary conditions. Furthermore, every iteration, a convergence value (squared sum of difference with previous iteration) is compared to a target value. The algorithm stops if either this target convergence value is reached or the number of iterations has reached its designated maximum value. %%% Explain about instability and 8 neighbours
 
 \begin{figure}[h]
     \centering
@@ -359,7 +360,7 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
     \begin{subfigure}[t]{0.45\linewidth}
         \centering
         \includegraphics[width=\linewidth]{Pics/disparity-lapf.png}
-        \caption{Disparity map contains errors which generally show up as `spiky' patches. Laplacian filter detects these patches.}
+        \caption{Disparity map contains errors which generally show up as `spiky' patches. A blurred Laplacian filter detects these patches.}
         \label{fig:disparity-lapf}
     \end{subfigure}
     ~
@@ -373,6 +374,16 @@ The interpolation algorithm fills in gaps of an input image using iterative rela
     \label{fig:disparity-fillgap}
 \end{figure}
 
+\subsection{Laplacian filter}
+In some small parts of the image, the disparity algorithm finds the wrong value. These can be observed in figure \ref{fig:disparity-fill} as white or dark gray patches. These values are most often quite different in magnitude from the rest of the face. As such, a filter function is used to remove `spiky' areas. This function calculates the absolute value of the Laplacian and applies a convolution with a gaussian function. This operation can be represented with the following equation:
+
+\begin{equation}
+    \mathbf{f}_{filt} = \mathbf{f} \cdot \mathrm{sgn}\!\left(\mathbf{G}_\sigma * |\nabla^2\mathbf{f}| - t\right)
+\end{equation}
+
+where $ \mathbf{f} $ is the disparity map, $ \mathbf{G}_\sigma $ is a Gaussian function and $ t $ is the assigned threshold. The result of $ \mathbf{G}_\sigma * |\nabla^2\mathbf{f}| $ can be observed in figure \ref{fig:disparity-lapf}. This immediately shows that the edges of the face are also `selected', caused by the steep gradient. However, since the edges of the face also contain some errors, this was kept the way it was.
+
+In the next step, the threshold is applied and the `spiky' patches are replaced by a constant value, which marks the gaps to be replaced by the interpolation algorithm of section \ref{sec:interpolation}. As can be observed in figure \ref{fig:disparity-flf}, though not perfect, the filter removes a reasonable portion of the errors. However, due to the nature of the algorithm (to be precise, the nature of the blurred Laplacian) the larger patches are not fixed.
 
 \subsection{Performance evaluation}
 \gray{For a performance evaluation, you often need to set-up an experiment. Describe the (protocol of the) experiment. Describe how the outcome of the experiment will be processed. Often, you need reference values, i.e. a gold standard, or a ground truth. Describe how this is achieved. If the processing is done statistically, mention the statistical test or statistical inference method.}
